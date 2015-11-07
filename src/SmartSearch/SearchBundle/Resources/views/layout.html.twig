@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang='fr'>
+    <head>
+        <title>{% block title %}Smart Search{% endblock %}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta content="user-scalable=no, initial-scale = 1, minimum-scale = 1, maximum-scale = 1, width=device-width" name="viewport">
+        <link href="/stylesheets/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
+        <link href="/stylesheets/jquery-ui.min.css" media="all" rel="stylesheet" type="text/css" />
+        <link href="/stylesheets/home.css" media="all" rel="stylesheet" type="text/css" />
+        {% block css %} {% endblock %}   
+    </head>
+    <body>
+		<div id="block-body">
+			<div id="header">
+				<div class="navbar navbar-default navbar-static-top" role="navigation">
+					<div class="container">
+						<div class="navbar-header">
+							<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+								<span class="sr-only">Toggle navigation</span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+								<span class="icon-bar"></span>
+							</button>
+							<a class="navbar-brand" href="{{path('smart_search_homepage')}}"><span>Smart Search</span></a>
+						</div>
+						<div class="navbar-collapse collapse" style="height: auto;">
+							<ul class="nav navbar-nav">
+								<li>
+									<a href="#">Option</a>
+								</li>
+								<li>
+									<a href="#">Option</a>
+								</li>
+								<li>
+									<a href="#">Option</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="b-content">
+				{%block content%}
+				 
+				{%endblock%}
+			</div>
+			<footer class="panel-footer">
+				<p>Copyryght &#169 2015 team smart search, tous droits reservés.</p>
+			</footer>
+		</div>
+         {% block javascripts %}
+         {% endblock %}  
+    </body>
+</html>
