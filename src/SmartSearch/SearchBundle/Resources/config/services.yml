@@ -1,0 +1,4 @@
+services:
+#    smart_search_search.example:
+#        class: SmartSearch\SearchBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
