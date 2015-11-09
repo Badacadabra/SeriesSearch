@@ -4,9 +4,17 @@
         <title>{% block title %}Smart Search{% endblock %}</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta content="user-scalable=no, initial-scale = 1, minimum-scale = 1, maximum-scale = 1, width=device-width" name="viewport">
-        <link href="/stylesheets/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
-        <link href="/stylesheets/jquery-ui.min.css" media="all" rel="stylesheet" type="text/css" />
-        <link href="/stylesheets/home.css" media="all" rel="stylesheet" type="text/css" />
+
+        <!--
+	        <link href="stylesheets/bootstrap.css" media="all" rel="stylesheet" type="text/css" />
+	        <link href="stylesheets/jquery-ui.min.css" media="all" rel="stylesheet" type="text/css" />
+	        <link href="stylesheets/home.css" media="all" rel="stylesheet" type="text/css" />
+   		-->
+
+        <link rel="stylesheet" href="{{ asset('bundles/smartsearchsearch/css/bootstrap.css') }}" type="text/css" />
+        <link rel="stylesheet" href="{{ asset('bundles/smartsearchsearch/css/jquery-ui.min.css') }}" type="text/css" />
+        <link rel="stylesheet" href="{{ asset('bundles/smartsearchsearch/css/home.css') }}" type="text/css" />
+
         {% block css %} {% endblock %}   
     </head>
     <body>
@@ -21,7 +29,7 @@
 								<span class="icon-bar"></span>
 								<span class="icon-bar"></span>
 							</button>
-							<a class="navbar-brand" href="{{path('smart_search_homepage')}}"><span>Smart Search</span></a>
+							<a class="navbar-brand" href="{{path('smart_search_homepage')}}"><span>Series Search</span></a>
 						</div>
 						<div class="navbar-collapse collapse" style="height: auto;">
 							<ul class="nav navbar-nav">
@@ -48,10 +56,19 @@
 				<p>Copyryght &#169 2015 team smart search, tous droits reservés.</p>
 			</footer>
 		</div>
-		<script type="text/javascript" src="/javascripts/jquery/jquery.js"></script>
-        <script type="text/javascript" src="/javascripts/jquery/jquery-ui-1.11.3.custom/jquery-ui.min.js"></script>
-        <script type="text/javascript" src="/javascripts/bootstrap/bootstrap.min.js"></script>
-        <script type="text/javascript" src="/javascripts/app/application.js"></script>
+
+		<!-- 
+			<script type="text/javascript" src="javascripts/jquery/jquery.js"></script>
+	        <script type="text/javascript" src="javascripts/jquery/jquery-ui-1.11.3.custom/jquery-ui.min.js"></script>
+	        <script type="text/javascript" src="javascripts/bootstrap/bootstrap.min.js"></script>
+	        <script type="text/javascript" src="javascripts/app/application.js"></script> 
+    	-->
+
+    	<script type="text/javascript" src="{{ asset('bundles/smartsearchsearch/js/jquery/jquery.js') }}"></script> 
+    	<script type="text/javascript" src="{{ asset('bundles/smartsearchsearch/js/jquery/jquery-ui-1.11.3.custom/jquery-ui.min.js') }}"></script> 
+    	<script type="text/javascript" src="{{ asset('bundles/smartsearchsearch/js/bootstrap/bootstrap.min.js') }}"></script> 
+    	<script type="text/javascript" src="{{ asset('bundles/smartsearchsearch/app/application.js') }}"></script> 
+
          {% block javascripts %}
          {% endblock %}  
     </body>

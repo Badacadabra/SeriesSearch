@@ -1,17 +1,47 @@
 {% extends "SmartSearchSearchBundle::layout.html.twig" %}
 {%block content%}
 	<div id="block-home">
-		<h2>Smart Search</h2>
-		<div class="input-group">
-		  <input type="text" class="form-control" id="main-search-engine" placeholder="Search for...">
-		  <span class="input-group-btn">
-			<button class="btn btn-default" type="button">Go!</button>
-		  </span>
+		<h2>Series Search</h2>
+
+		<div id="form">
+			{{ form_start(form) }}
+				{{ form_errors(form) }}
+				<div>
+			        {{ form_errors(form.keyword) }}
+			        {{ form_widget(form.keyword) }}
+			    </div>
+			  
+			{{ form_end(form) }}
 		</div>
-		<input type="hidden" id="result-val"/>
+
 	</div>
+	
+	{% if results is defined %}
+
+		{% if results|length > 0 %}
+
+			<div id="results">
+				<h1>TOP 10 sur l'expression "{{keyword}}"</h1>
+				<p>Résultats via le crawl du {{results[0][1].dateCrawl|date('Y-m-d')}}</p>
+				{% for critique in results %}
+					<div class="result">
+						<div class="image">
+							<img src="{{ asset(critique[1].getWebPath) }}" />
+						</div>
+						<div class="description">
+							<h2>{{critique[0].title}}</h2>
+							<p>{{critique[0].content|truncate(200, true, '...')}}</p>
+							<p><a href="{{path('smart_search_review_display', {'id': critique[0].idReview})}}">Voir la page</a></p>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+
+		{% endif %}
+
+	{% endif %}
+
 {%endblock%}
+
 {%block javascripts%}
-	<script type="text/javascript" src="/javascripts/app/ajax.js"></script>
-	<script type="text/javascript" src="/javascripts/app/search-engine.js"></script>
 {%endblock%}

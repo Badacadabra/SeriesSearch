@@ -2,9 +2,14 @@ smart_search_homepage:
     path:     /
     defaults: { _controller: SmartSearchSearchBundle:Search:home }
 
-smart_search_ajax_search_engine:
-    path:     /ajax/search/{term}
-    defaults: { _controller: SmartSearchSearchBundle:Search:ajaxSearchEngine, _format : json }
+smart_search_keyword:
+    path:     /search/{keyword}
+    defaults: { _controller: SmartSearchSearchBundle:Search:search }
     requirements:
-      _method: GET
-    
+        keyword:   ^[a-zA-Z0-9_+-]+$
+
+smart_search_review_display:
+    path:     /review/{id}
+    defaults: { _controller: SmartSearchSearchBundle:Search:displayReview }
+    requirements:
+        id:   ^[0-9]+$
