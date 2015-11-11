@@ -13,3 +13,9 @@ smart_search_review_display:
     defaults: { _controller: SmartSearchSearchBundle:Search:displayReview }
     requirements:
         id:   ^[0-9]+$
+
+smart_search_index:
+    path:     /generate-index/{dateinput}
+    defaults: { _controller: SmartSearchSearchBundle:Search:createIndex }
+    requirements:
+        keyword:   ^[0-9-]+$

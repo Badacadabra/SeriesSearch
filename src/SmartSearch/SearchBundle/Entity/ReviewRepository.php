@@ -12,4 +12,16 @@ use Doctrine\ORM\EntityRepository;
  */
 class ReviewRepository extends EntityRepository
 {
+	public function getInJson($dateCrawl)
+	{
+		$qb = $this->createQueryBuilder('r');
+
+		$qb
+		->where('r.dateCrawl = :dateCrawl')
+		->setParameter('dateCrawl', $dateCrawl)
+		;
+
+		$results = $qb->getQuery()->getResult();
+		return json_encode($results);
+	}
 }

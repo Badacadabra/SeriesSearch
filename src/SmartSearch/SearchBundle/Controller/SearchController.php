@@ -96,7 +96,7 @@ class SearchController extends Controller
 
         $keyword = str_replace("+", " ", $keyword);
 
-        $dateCrawl = "2015-11-09";
+        $dateCrawl = "2015-11-10";
 
         $results = $this->displayResults($keywordArray, $dateCrawl);
 
@@ -108,26 +108,26 @@ class SearchController extends Controller
     // ***********************************
     // Méthode de création de l'index à partir des documents scrappés
     // ***********************************
-    private function getIndex($dateInput)
+    public function createIndexAction($dateinput)
     {
         $em = $this->getDoctrine()->getManager();
-        $date = new \DateTime($dateInput);
+        $date = new \DateTime($dateinput);
 
-        $reviews = $em->getRepository('SmartSearchSearchBundle:Review')->findBy(array("dateCrawl" => $date), array("id" => 'ASC'), 1500);
+        $reviews = $em->getRepository('SmartSearchSearchBundle:Review')->findBy(array("dateCrawl" => $date), array(), 900);
         $collection = array();
 
         foreach($reviews as $review) {
             $txt = $this->cleanContent($review->getTitle()).$this->cleanContent($review->getContent());
-            $collection[] = array($review->getId(), $txt);
+            $collection[$review->getId()] = $txt;
         }
 
         $dictionary = array();
         $docCount = array();
 
-        foreach($collection as $review) {
+        foreach($collection as $idReview => $review) {
 
-            $terms = explode(' ', $review[1]);
-            $docCount[$review[0]] = count($terms);
+            $terms = explode(' ', $review);
+            $docCount[$idReview] = count($terms);
 
             foreach($terms as $term) {
 
@@ -135,19 +135,38 @@ class SearchController extends Controller
                     $dictionary[$term] = array('df' => 0, 'postings' => array());
                 }
 
-                if(!isset($dictionary[$term]['postings'][$review[0]])) {
+                if(!isset($dictionary[$term]['postings'][$idReview])) {
                     $dictionary[$term]['df']++;
-                    $dictionary[$term]['postings'][$review[0]] = array('tf' => 0);
+                    $dictionary[$term]['postings'][$idReview] = array('tf' => 0);
                 }
 
-                $dictionary[$term]['postings'][$review[0]]['tf']++;
+                $dictionary[$term]['postings'][$idReview]['tf']++;
 
             }
 
         }
 
-        return array('docCount' => $docCount, 'dictionary' => $dictionary);
+        $index = array('docCount' => $docCount, 'dictionary' => $dictionary);
 
+        // On encode les résultats en JSON et on les écrit dans le fichier index.json
+        $indexJson = json_encode($index);
+        $fp = fopen(__DIR__.'/../../../../web/docs/index_'.$dateinput.'.json', 'w') or die('Cannot open file: /docs/index.json');
+        fwrite($fp, json_encode($indexJson));
+        fclose($fp);
+
+        return $this->redirect($this->generateUrl('smart_search_homepage', array()));
+
+    }
+
+
+    // ***********************************
+    // Méthode de récupération de l'index
+    // ***********************************
+    private function getIndex($dateCrawl)
+    {
+        $indexJson = file_get_contents(__DIR__."/../../../../web/docs/index_".$dateCrawl.".json");
+        $index = json_decode(json_decode($indexJson)); // obliger d'effectuer un double json_decode() pour décoder correctement le fichier
+        return $index;
     }
 
 
@@ -156,23 +175,24 @@ class SearchController extends Controller
     // ***********************************
     private function getResults($query, $dateCrawl)
     {
+        // $index = $this->createIndex($dateCrawl);
         $index = $this->getIndex($dateCrawl);
         $matchDocs = array();
-        $docCount = count($index['docCount']);
+        $docCount = count($index->docCount);
 
         $return = "";
-        foreach($query as $qterm) {
+        foreach($query as $term) {
 
-            if(isset($index['dictionary'][$qterm])) {
+            if(isset($index->dictionary->$term)) {
 
-                $entry = $index['dictionary'][$qterm];
+                $entry = $index->dictionary->$term;
 
-                foreach($entry['postings'] as $idReview => $posting) {
+                foreach($entry->postings as $idReview => $posting) {
 
                     if(!isset($matchDocs[$idReview])) {
-                        $matchDocs[$idReview] = $posting['tf'] * log($docCount + 1 / $entry['df'] + 1, 2);
+                        $matchDocs[$idReview] = $posting->tf * log($docCount + 1 / $entry->df + 1, 2);
                     } else {
-                        $matchDocs[$idReview] += $posting['tf'] * log($docCount + 1 / $entry['df'] + 1, 2);
+                        $matchDocs[$idReview] += $posting->tf * log($docCount + 1 / $entry->df + 1, 2);
                     }
                 }
             }
@@ -180,12 +200,12 @@ class SearchController extends Controller
 
         // Normalisation
         foreach($matchDocs as $idReview => $score) {
-                $matchDocs[$idReview] = $score/$index['docCount'][$idReview];
+                $matchDocs[$idReview] = $score/$index->docCount->$idReview;
         }
 
         arsort($matchDocs); // On tri par ordre décroissant
-
-        return $matchDocs;
+        $results = array_slice($matchDocs, 0, 10, true); // On ne garde que le TOP 10.
+        return $results;
     }
 
     
@@ -199,22 +219,13 @@ class SearchController extends Controller
 
         $results = $this->getResults($query, $dateCrawl);
         $reviews = array();
-        $images = array();
 
-        $start = 1;
-        $max = 10; // On ne garde que le TOP 10.
-
-        foreach($results as $idReview => $result) {
+        foreach($results as $idReview => $score) {
 
             $review = $em->getRepository('SmartSearchSearchBundle:Review')->find($idReview);
             $serie = $em->getRepository('SmartSearchSearchBundle:Serie')->findOneBy(array('name' => $review->getNameSerie()));
 
             $reviews[] = array($review, $serie);
-
-            if($start == $max)
-                break;
-
-            $start++;
 
         }
 
