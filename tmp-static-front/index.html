@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang='fr'>
+    <head>
+        <meta charset="UTF-8">
+        <title>Search</title>
+<!--
+        <meta content="user-scalable=no, initial-scale = 1, minimum-scale = 1, maximum-scale = 1, width=device-width" name="viewport">
+-->
+        <link rel="stylesheet" href="style.css" media="all">
+        <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+        <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.1/jquery.qtip.min.css">
+        <link rel="stylesheet" href="semantic/dist/semantic.min.css">
+    </head>
+    <body itemscope itemtype="http://schema.org/WebPage">
+        <img id="tv" src="images/tv.png" alt="TV">
+        <img id="remote" src="images/remote-control.png" alt="Télécommande" usemap="#buttons">
+        <map name="buttons">
+            <area shape="circle" coords="156,39,12" title="Allumer/Éteindre la TV" id="on-off" />
+            <area shape="rect" coords="30,66,59,84" title="Source indisponible" class="config" />
+            <area shape="rect" coords="62,67,93,84" title="Source indisponible" class="config" />
+            <area shape="rect" coords="97,66,130,83" title="Source principale" id="tv-config" />
+            <area shape="rect" coords="134,66,161,83" title="Source indisponible" class="config" />
+            <area shape="circle" coords="34,108,11" title="Menu" id="menu" />
+            <area shape="circle" coords="154,108,10" title="Source indisponible" class="config" />
+            <area shape="circle" coords="94,174,38" title="Search!" id="enter" />
+            <area shape="circle" coords="95,122,11" title="Toto" class="arrows" />
+            <area shape="circle" coords="147,175,12" title="Toto" class="arrows" />
+            <area shape="circle" coords="95,227,12" title="Toto" class="arrows" />
+            <area shape="circle" coords="44,176,12" title="Toto" class="arrows" />
+            <area shape="circle" coords="34,242,10" title="Aide" id="help-button" />
+            <area shape="circle" coords="154,242,10" title="Infos sur le programme" id="info-button" />
+            <area shape="rect" coords="30,266,59,282" title="Précédent" class="controls" />
+            <area shape="rect" coords="62,267,92,282" title="Play" class="controls" />
+            <area shape="rect" coords="98,267,128,282" title="Stop" class="controls" />
+            <area shape="rect" coords="131,266,160,283" title="Suivant" class="controls" />
+            <area shape="circle" coords="45,315,14" title="Changer de chaîne" class="channels" />
+            <area shape="circle" coords="94,315,14" title="Changer de chaîne" class="channels" />
+            <area shape="circle" coords="144,314,14" title="Changer de chaîne" class="channels" />
+            <area shape="circle" coords="46,356,14" title="Changer de chaîne" class="channels" />
+            <area shape="circle" coords="95,356,14" title="Changer de chaîne" class="channels"/>
+            <area shape="circle" coords="145,357,15" title="Changer de chaîne" class="channels" />
+            <area shape="circle" coords="45,397,15" title="Changer de chaîne" class="channels" />
+            <area shape="circle" coords="95,397,15" title="Changer de chaîne" class="channels" />
+            <area shape="circle" coords="145,398,15" title="Changer de chaîne" class="channels" />
+            <area shape="circle" coords="45,439,15" title="Annuler" id="cancel" />
+            <area shape="circle" coords="95,439,15" title="Changer de chaîne" class="channels" />
+            <area shape="circle" coords="145,439,15" title="Recharger la page" id="reload" />
+        </map>
+        <div id="screen">
+            <!-- Free text search  -->
+            <div id="free-text-search">
+                <h1>Search</h1>
+                <form id="form" name="form" method="post" action="">
+                    <div class="ui fluid massive icon input">
+                        <input placeholder="Une série vous tente ?" type="text">
+                        <i class="search icon"></i>
+                    </div>
+                </form>
+            </div>
+            <!-- Aide sur le programme -->
+            <div id="help" style="display:none;">
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut eu lectus id augue eleifend congue vel sed magna. Ut lobortis, nisi at consequat sollicitudin, arcu odio dignissim mi, sed elementum est nulla sit amet risus. Donec eu dictum lorem. Suspendisse potenti. Donec placerat dui nec auctor cursus. Sed tristique venenatis feugiat. Curabitur cursus dui vitae malesuada accumsan. Praesent eleifend sagittis orci, id placerat libero interdum posuere. In lectus est, bibendum vitae lobortis sit amet, efficitur eget sapien. Morbi laoreet est non felis efficitur vehicula.</p>
+                <p>Mauris facilisis ornare odio vitae mollis. Maecenas tincidunt est nisi, at elementum augue commodo vel. In pretium dolor nibh, eu porta orci cursus a. Curabitur vitae vestibulum justo. Donec finibus pharetra tincidunt. Fusce et nunc orci. Nulla eu consequat nibh. Donec eget mollis purus. Morbi quis orci lacus. Suspendisse venenatis erat nulla, quis sollicitudin ex mollis ut. Donec accumsan lacus eget erat fringilla, et lobortis lectus scelerisque. Etiam vitae ultricies est, id egestas odio. Sed quis dictum odio, nec interdum est. Pellentesque pharetra, velit nec semper tristique, metus mauris accumsan orci, a sagittis risus nunc eget ante. Integer dictum pharetra metus, ut convallis dui sollicitudin sit amet.</p>
+            </div>
+            <!-- Infos sur le programme -->
+            <div id="about" class="ui cards" style="display:none;">
+                <div class="card" itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <div class="image">
+                        <img src="images/macky-dieng.jpg" itemprop="image">
+                    </div>
+                    <div class="content">
+                        <span class="header">
+                            <span itemprop="givenName">Macky</span>
+                            <span itemprop="familyName">Dieng</span>
+                        </span>
+                    </div>
+                    <div class="extra content">
+                        <a href="https://github.com/dieng444" target="_blank" itemprop="url">
+                            <i class="github icon"></i>
+                            dieng444
+                        </a>
+                    </div>
+                </div>
+                <div class="card" itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <div class="image">
+                        <img src="images/julien-foucault.jpg" itemprop="image">
+                    </div>
+                    <div class="content">
+                        <span class="header">
+                            <span itemprop="givenName">Julien</span>
+                            <span itemprop="familyName">Foucault</span>
+                        </span>
+                    </div>
+                    <div class="extra content">
+                        <a href="https://github.com/JulienNaufaulo" target="_blank" itemprop="url">
+                            <i class="github icon"></i>
+                            JulienNaufaulo
+                        </a>
+                    </div>
+                </div>
+                <div class="card" itemprop="author" itemscope itemtype="https://schema.org/Person">
+                    <div class="image">
+                        <img src="images/baptiste-vannesson.jpg" itemprop="image">
+                    </div>
+                    <div class="content">
+                        <span class="header">
+                            <span itemprop="givenName">Baptiste</span>
+                            <span itemprop="familyName">Vannesson</span>
+                        </span>
+                    </div>
+                    <div class="extra content">
+                        <a href="https://github.com/Badacadabra" target="_blank" itemprop="url">
+                            <i class="github icon"></i>
+                            Badacadabra
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Source indisponible -->
+            <img id="intermission" src="images/intermission.png" alt="Intermission" style="display:none;">
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.1/jquery.qtip.min.js"></script>
+        <script src="semantic/dist/semantic.min.js"></script>
+        <script src="javascript/jquery.maphilight.min.js"></script>
+        <script>
+            $( document ).ready(function() {
+                $( "[title!='']" ).qtip({
+                    style: {
+                        classes: 'qtip-light'
+                    }
+                });
+                $( "#remote" ).maphilight();
+                $( "#remote" ).draggable({ containment: "parent", scroll: false });
+
+                // Gestion des clics sur les boutons
+                $( "#on-off" ).click(function() {
+                    $( "#screen" ).fadeToggle();
+                });
+                $( ".config" ).click(function() {
+                    $( "#intermission" ).show();
+                });
+                $( "#tv-config" ).click(function() {
+                    $( "#intermission" ).hide();
+                });
+                $( "#enter" ).click(function() {
+                    $( "#intermission" ).hide();
+                    $( "#about" ).hide();
+                    $( "#help" ).hide();
+                    $( "#free-text-search" ).show();
+                });
+                $( "#help-button" ).click(function() {
+                    $( "#intermission" ).hide();
+                    $( "#free-text-search" ).hide();
+                    $( "#about" ).hide();
+                    $( "#help" ).show();
+                });
+                $( "#info-button" ).click(function() {
+                    $( "#intermission" ).hide();
+                    $( "#free-text-search" ).hide();
+                    $( "#help" ).hide();
+                    $( "#about" ).show();
+
+                });
+                $( "#reload" ).click(function() {
+                    location.reload();
+                });
+            });
+
+            $.fn.maphilight.defaults = {
+                fill: true,
+                fillColor: '000000',
+                fillOpacity: 0.3,
+                stroke: true,
+                strokeColor: 'ffffff',
+                strokeOpacity: 1,
+                strokeWidth: 3,
+                fade: true,
+                alwaysOn: false,
+                neverOn: false,
+                groupBy: false,
+                wrapClass: true,
+                shadow: false,
+                shadowX: 0,
+                shadowY: 0,
+                shadowRadius: 6,
+                shadowColor: '000000',
+                shadowOpacity: 0.8,
+                shadowPosition: 'outside',
+                shadowFrom: false
+            }
+        </script>
+    </body>
+</html>

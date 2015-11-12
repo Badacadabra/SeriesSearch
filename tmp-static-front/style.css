@@ -1,0 +1,65 @@
+* {
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    background-color: #F2F2F2 !important;
+/*
+    background: url('images/home.jpg') no-repeat center !important;
+*/
+}
+
+img#tv, div#screen, img#intermission {
+    position: absolute !important;
+    top: 0; left: 0; bottom: 0; right: 0;
+    margin: auto !important;
+}
+
+img#tv {
+    width: 800px;
+    height: 658px;
+}
+
+img#remote {
+    width: 189px;
+    height: 492px;
+    position: absolute !important;
+    top: 30px;
+    left: 30px;
+    z-index: 2;
+}
+
+map area:hover {
+    cursor: pointer;
+}
+
+div#screen {
+    width: 750px !important;
+    height: 470px !important;
+    background-color: white !important;
+    position: relative;
+    top: -135px;
+}
+
+div#screen h1 {
+    font-size: xx-large;
+    text-align: center;
+    margin: 30px !important;
+}
+
+div#screen form#form {
+    width: 90%;
+    margin: auto;
+}
+
+#about {
+    height: 470px !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+#about .card {
+    width: 200px !important;
+}
