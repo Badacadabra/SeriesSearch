@@ -122,7 +122,7 @@ class SearchController extends Controller
         $em = $this->getDoctrine()->getManager();
         $date = new \DateTime($dateinput);
 
-        $reviews = $em->getRepository('SmartSearchSearchBundle:Review')->findBy(array("dateCrawl" => $date), array(), 900);
+        $reviews = $em->getRepository('SmartSearchSearchBundle:Review')->findBy(array("dateCrawl" => $date), array(), 1000);
         $collection = array();
 
         foreach($reviews as $review) {
@@ -157,10 +157,9 @@ class SearchController extends Controller
 
         $index = array('docCount' => $docCount, 'dictionary' => $dictionary);
 
-        // On encode les résultats en JSON et on les écrit dans le fichier index.json
-        $indexJson = json_encode($index);
-        $fp = fopen(__DIR__.'/../../../../web/docs/index_'.$dateinput.'.json', 'w') or die('Cannot open file: /docs/index.json');
-        fwrite($fp, json_encode($indexJson));
+        $indexJson = json_encode($index); // On encode les résultats en JSON 
+        $fp = fopen(__DIR__.'/../../../../web/docs/index_'.$dateinput, 'w');
+        fwrite($fp, serialize($indexJson)); // On serialize les donnes pour gagner en rapidité et on les écrit dans le fichier index.json
         fclose($fp);
 
         return $this->redirect($this->generateUrl('smart_search_homepage', array()));
@@ -173,8 +172,8 @@ class SearchController extends Controller
     // ***********************************
     private function getIndex($dateCrawl)
     {
-        $indexJson = file_get_contents(__DIR__."/../../../../web/docs/index_".$dateCrawl.".json");
-        $index = json_decode(json_decode($indexJson)); // obliger d'effectuer un double json_decode() pour décoder correctement le fichier
+        $indexJson = file_get_contents(__DIR__."/../../../../web/docs/index_".$dateCrawl);
+        $index = json_decode(unserialize($indexJson));
         return $index;
     }
 
@@ -186,6 +185,7 @@ class SearchController extends Controller
     {
         // $index = $this->createIndex($dateCrawl);
         $index = $this->getIndex($dateCrawl);
+        // var_dump($index);
         $matchDocs = array();
         $docCount = count($index->docCount);
 
