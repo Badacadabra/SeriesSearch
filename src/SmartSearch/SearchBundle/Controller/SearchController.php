@@ -19,6 +19,8 @@ class SearchController extends Controller
     public function homeAction(Request $request)
     {
         
+        //$this->createIndexAction("2015-11-13");
+        
         $form = $this->createFormBuilder()
             ->add('keyword', 'text', 
                 array(
@@ -84,6 +86,7 @@ class SearchController extends Controller
             ->getForm();
 
         $form->handleRequest($request);
+        //var_dump($form->get('dateCrawl')->getData());die;
         if ($form->isValid()) {
 
             $keyword = $form->get('keyword')->getData();
@@ -281,13 +284,14 @@ class SearchController extends Controller
      * */
     private function getDates()
     {
-		$em = $this->getDoctrine()->getManager();
+		/*$em = $this->getDoctrine()->getManager();
         $listDates = $em->getRepository('SmartSearchSearchBundle:Review')->getDistinctDate();
         $dates = array();
         foreach($listDates as $date) {
 			$formatedDate = $date['dateCrawl']->format('Y-m-d');
-			$dates[$formatedDate] = $formatedDate; //Pour avoir la date comme value dans les balises "option" de la select list
-		}
+			$dates[$formatedDate] = $formatedDate; //Pour avoir la date comme value dans les balises "option" de la select list.
+		}*/
+		$dates = array("2015-11-13" => "2015-11-13","2015-11-10" => "2015-11-10");
 		return $dates;
 	}
 
