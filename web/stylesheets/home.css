@@ -27,3 +27,31 @@ footer {
 	right:0;
 	left:0;
 }
+#form form div{
+	display: table-cell;
+}
+#form_keyword{
+	width:500px;
+}
+#results{
+	width:650px;
+	margin: 0 auto;
+}
+.result{
+	display: table;
+	padding-bottom: 20px;
+}
+.result .image img{
+	width:100px;
+}
+.result .image, .result .description{
+	display: table-cell;
+	vertical-align: top;
+}
+.result .image{
+	padding-right:20px;
+}
+.result .description h1{
+	margin:0;
+	padding:0;
+}

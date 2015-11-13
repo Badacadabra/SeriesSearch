@@ -10,19 +10,22 @@
 			        {{ form_errors(form.keyword) }}
 			        {{ form_widget(form.keyword) }}
 			    </div>
-			  
+			    <div>
+			        {{ form_errors(form.dateCrawl) }}
+			        {{ form_widget(form.dateCrawl) }}
+			    </div>
+				
 			{{ form_end(form) }}
 		</div>
 
 	</div>
-	
 	{% if results is defined %}
-
 		{% if results|length > 0 %}
 
 			<div id="results">
 				<h1>TOP 10 sur l'expression "{{keyword}}"</h1>
-				<p>Résultats via le crawl du {{results[0][1].dateCrawl|date('Y-m-d')}}</p>
+				<p>Résultats via le crawl du {{dateCrawl}}</p>
+				<!-- <p>Résultats via le crawl du {{results[0][1].dateCrawl|date('Y-m-d')}}</p> -->
 				{% for critique in results %}
 					<div class="result">
 						<div class="image">

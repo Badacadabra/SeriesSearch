@@ -24,4 +24,10 @@ class ReviewRepository extends EntityRepository
 		$results = $qb->getQuery()->getResult();
 		return json_encode($results);
 	}
+	public function getDistinctDate()
+	{
+		return $this->getEntityManager()
+					->createQuery('SELECT DISTINCT r.dateCrawl FROM SmartSearchSearchBundle:Review r ORDER BY r.dateCrawl ASC')
+					->getResult();
+	}
 }

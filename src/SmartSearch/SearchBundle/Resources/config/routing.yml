@@ -3,11 +3,12 @@ smart_search_homepage:
     defaults: { _controller: SmartSearchSearchBundle:Search:home }
 
 smart_search_keyword:
-    path:     /search/{keyword}
+    path:     /search/{keyword}/{dateCrawl}
     defaults: { _controller: SmartSearchSearchBundle:Search:search }
     requirements:
         keyword:   ^[a-zA-Z0-9_+-]+$
-
+        dateCrawl: ^[0-9-]+$
+        
 smart_search_review_display:
     path:     /review/{id}
     defaults: { _controller: SmartSearchSearchBundle:Search:displayReview }

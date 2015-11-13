@@ -18,6 +18,7 @@ class SearchController extends Controller
      * */
     public function homeAction(Request $request)
     {
+        
         $form = $this->createFormBuilder()
             ->add('keyword', 'text', 
                 array(
@@ -29,24 +30,29 @@ class SearchController extends Controller
                         )
                     )
                 )
+			->add('dateCrawl','choice', array('label'=>'Gender',
+                'choices'   => $this->getDates(),   
+            ))
             ->add('Go!', 'submit')
             ->getForm();
 
         $form->handleRequest($request);
-
+		
         if ($form->isValid()) {
 
             $keyword = $form->get('keyword')->getData();
             $keywordArray = explode(" ", $keyword);
             $listeKeywords = array();
-
+			
+			
             foreach($keywordArray as $motcle) {
                 $listeKeywords[] = $this->cleanContent($motcle);
             }
 
             $keywordCleaned = implode("+", $listeKeywords);
-
-            return $this->redirect($this->generateUrl('smart_search_keyword', array("keyword" => $keywordCleaned)));
+			$dateCrawl = $form->get('dateCrawl')->getData();
+            return $this->redirect($this->generateUrl('smart_search_keyword', 
+									array("keyword" => $keywordCleaned, "dateCrawl" => $dateCrawl)));
         }
         return $this->render('SmartSearchSearchBundle:Search:index.html.twig', array("form" => $form->createView()));
     }
@@ -57,7 +63,7 @@ class SearchController extends Controller
      * Retourne la liste des résultats pour une expression-clé donnée
      * @return $this
      * */
-    public function searchAction(Request $request, $keyword)
+    public function searchAction(Request $request, $keyword, $dateCrawl)
     {
 
         $form = $this->createFormBuilder()
@@ -71,11 +77,13 @@ class SearchController extends Controller
                         )
                     )
                 )
+			->add('dateCrawl','choice', array('label'=>'Gender',
+                'choices'   => $this->getDates(),   
+            ))
             ->add('Go!', 'submit')
             ->getForm();
 
         $form->handleRequest($request);
-
         if ($form->isValid()) {
 
             $keyword = $form->get('keyword')->getData();
@@ -88,23 +96,24 @@ class SearchController extends Controller
             }
             
             $keywordCleaned = implode("+", $listeKeywords);
-
-            return $this->redirect($this->generateUrl('smart_search_keyword', array("keyword" => $keywordCleaned)));
+			$dateCrawl = $form->get('dateCrawl')->getData();
+            return $this->redirect($this->generateUrl('smart_search_keyword',
+								array(
+										"keyword" => $keywordCleaned, 
+										"dateCrawl" => $dateCrawl //Date de crawl provenant du formulaire
+									)));
         }
 
         $keywordArray = explode("+", $keyword);
-
         $keyword = str_replace("+", " ", $keyword);
-
-        $dateCrawl = "2015-11-10";
-
         $results = $this->displayResults($keywordArray, $dateCrawl);
-
-        return $this->render('SmartSearchSearchBundle:Search:index.html.twig', array("form" => $form->createView(), "results" => $results, "keywordArray" => $keywordArray, "keyword" => $keyword));
+        return $this->render('SmartSearchSearchBundle:Search:index.html.twig', 
+								array(
+									  "form" => $form->createView(), "results" => $results,
+									  "keywordArray" => $keywordArray, "keyword" => $keyword,
+									  "dateCrawl" => $dateCrawl //Date de crawl provenant du paramètre de la route
+								));
     }
-
-
-
     // ***********************************
     // Méthode de création de l'index à partir des documents scrappés
     // ***********************************
@@ -267,5 +276,19 @@ class SearchController extends Controller
      
         return $str;
     }
+    /**
+     * Permet de renvoyer les dates de crawl
+     * */
+    private function getDates()
+    {
+		$em = $this->getDoctrine()->getManager();
+        $listDates = $em->getRepository('SmartSearchSearchBundle:Review')->getDistinctDate();
+        $dates = array();
+        foreach($listDates as $date) {
+			$formatedDate = $date['dateCrawl']->format('Y-m-d');
+			$dates[$formatedDate] = $formatedDate; //Pour avoir la date comme value dans les balises "option" de la select list
+		}
+		return $dates;
+	}
 
 }

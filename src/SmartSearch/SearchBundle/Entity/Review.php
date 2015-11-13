@@ -222,4 +222,8 @@ class Review
     {
         return 'docs/reviews';
     }
+    public function getSimpleCrawlDate()
+    {
+		return $this->dateCrawl->format('Y-m-d');
+	}
 }
