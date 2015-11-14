@@ -294,5 +294,18 @@ class SearchController extends Controller
 		$dates = array("2015-11-13" => "2015-11-13","2015-11-10" => "2015-11-10");
 		return $dates;
 	}
-
+	/**
+	 * Permet d'afficher site des critiques
+	 * @param int id : l'identifiant de la critique
+	 * */
+	public function displayReviewAction($id) 
+	{
+		$review = $this->getDoctrine()->getRepository("SmartSearchSearchBundle:Review")->findOneBy(array("idReview" =>$id ));
+		$template = $review->getFile($review->getDateCrawl()->format('Y-m-d'));
+		ob_start();
+		require_once($template);
+		$html = ob_get_contents();
+		ob_end_clean();
+		return new Response($html);
+	}
 }
