@@ -214,7 +214,7 @@ class Review
 
     public function getFile($date)
     {
-        $date = $this->dateCrawl->format('Y-m-d');
+        //$date = $this->dateCrawl->format('Y-m-d');
         return $this->getUploadDir().'/'.$date.'/'.$this->idReview.".html";
     }
 

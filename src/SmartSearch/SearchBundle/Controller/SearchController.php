@@ -106,10 +106,11 @@ class SearchController extends Controller
 										"dateCrawl" => $dateCrawl //Date de crawl provenant du formulaire
 									)));
         }
-
         $keywordArray = explode("+", $keyword);
         $keyword = str_replace("+", " ", $keyword);
         $results = $this->displayResults($keywordArray, $dateCrawl);
+        //Formatage des données pour D3.js
+		$this->generateGraphJsonFile($results,$keywordArray);
         return $this->render('SmartSearchSearchBundle:Search:index.html.twig', 
 								array(
 									  "form" => $form->createView(), "results" => $results,
@@ -297,15 +298,42 @@ class SearchController extends Controller
 	/**
 	 * Permet d'afficher site des critiques
 	 * @param int id : l'identifiant de la critique
+	 * @param dateCrawl : la date du crawl, enfin de pouvoir
+	 * récupérer le bon fichier html pour chaque critique
 	 * */
-	public function displayReviewAction($id) 
+	public function displayReviewAction($id,$dateCrawl) 
 	{
 		$review = $this->getDoctrine()->getRepository("SmartSearchSearchBundle:Review")->findOneBy(array("idReview" =>$id ));
-		$template = $review->getFile($review->getDateCrawl()->format('Y-m-d'));
+		$template = $review->getFile($dateCrawl);
 		ob_start();
 		require_once($template);
 		$html = ob_get_contents();
 		ob_end_clean();
 		return new Response($html);
+	}
+	public function graphAction()
+	{
+		return $this->render("SmartSearchSearchBundle:Search:result-graph.html.twig",array());
+	}
+	/**
+	 * Permet de créer le fichier json pour le graphe
+	 * @param array $results : le résultat à partir du 
+	 * quel le fichier json sera créé
+	 * @param string $keywordArray : mot clé déclencheur de la requête
+	 * */
+	public function generateGraphJsonFile(array $results, $keywordArray)
+	{
+		if (sizeof($results) > 0) {
+			$nodes = array();
+			$nodes[] = array("name" => implode(" ",$keywordArray));
+			$links = array();
+			$j = 1;
+			for( $i =0; $i < sizeof($results); $i++ ) {
+				$nodes[] = array("name" => $results[$i][0]->getTitle());
+				$links[] = array("source" => 0, "target" => $j++ );
+			}
+			$data = array("nodes" => $nodes, "links"=> $links);
+			file_put_contents(__DIR__.'/../../../../web/tmp/search_result.json', json_encode($data));
+		}
 	}
 }
