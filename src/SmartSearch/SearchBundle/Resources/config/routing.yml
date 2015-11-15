@@ -6,7 +6,7 @@ smart_search_keyword:
     path:     /search/{keyword}/{dateCrawl}
     defaults: { _controller: SmartSearchSearchBundle:Search:search }
     requirements:
-        keyword:   ^[a-zA-Z0-9_+-]+$
+        keyword:   ^[a-zA-Z0-9_+-:]+$
         dateCrawl: ^[0-9-]+$
         
 smart_search_review_display:

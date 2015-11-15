@@ -107,6 +107,16 @@ class SearchController extends Controller
 									)));
         }
         $keywordArray = explode("+", $keyword);
+        if (preg_match("#^(from|to)#i",$keyword)) {
+			$customQueryFromSide = explode(":",$keywordArray[0])[1];
+			$customQueryToSide = explode(":",$keywordArray[1])[1];
+			
+			var_dump($customQueryFromSide);
+			var_dump($customQueryToSide);die;
+		} else
+			echo "test faild";die;
+        
+        
         $keyword = str_replace("+", " ", $keyword);
         $results = $this->displayResults($keywordArray, $dateCrawl);
         //Formatage des données pour D3.js
