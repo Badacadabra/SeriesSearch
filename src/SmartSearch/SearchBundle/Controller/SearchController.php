@@ -107,18 +107,16 @@ class SearchController extends Controller
 									)));
         }
         $keywordArray = explode("+", $keyword);
+        //Condition pour les requêtes de type from:date to:date
+        //"#^from:[a-z0-9-+]to:[a-z0-9]#i"
+        //"#^(from|to)#i"
         if (preg_match("#^(from|to)#i",$keyword)) {
-			$customQueryFromSide = explode(":",$keywordArray[0])[1];
-			$customQueryToSide = explode(":",$keywordArray[1])[1];
-			
-			var_dump($customQueryFromSide);
-			var_dump($customQueryToSide);die;
-		} else
-			echo "test faild";die;
-        
-        
-        $keyword = str_replace("+", " ", $keyword);
-        $results = $this->displayResults($keywordArray, $dateCrawl);
+			$results = $this->displayResultsByCustomQuery($keywordArray);
+		} else {
+			$results = $this->displayResults($keywordArray, $dateCrawl);
+		}
+		//var_dump($results);die;
+		$keyword = str_replace("+", " ", $keyword);
         //Formatage des données pour D3.js
 		$this->generateGraphJsonFile($results,$keywordArray);
         return $this->render('SmartSearchSearchBundle:Search:index.html.twig', 
@@ -296,7 +294,7 @@ class SearchController extends Controller
     private function getDates()
     {
 		/*$em = $this->getDoctrine()->getManager();
-        $listDates = $em->getRepository('SmartSearchSearchBundle:Review')->getDistinctDate();
+        $listDates = $em->getRepository('SmartSearchSearchBundle:Review')->findDistinctDate();
         $dates = array();
         foreach($listDates as $date) {
 			$formatedDate = $date['dateCrawl']->format('Y-m-d');
@@ -345,5 +343,26 @@ class SearchController extends Controller
 			$data = array("nodes" => $nodes, "links"=> $links);
 			file_put_contents(__DIR__.'/../../../../web/tmp/search_result.json', json_encode($data));
 		}
+	}
+	/**
+	 * Renvoie le résultat des requêtes du type from:Startdate to:dateEndDate
+	 * @param array $query : la requête à analyser
+	 * */
+	public function displayResultsByCustomQuery($query)
+	{
+		$customQueryFromSide = explode(":",$query[0])[1]; //La partie "from" de la requête
+		$customQueryToSide = explode(":",$query[1])[1]; //La partie "to" de la requête
+		$reviewRepository = $this->getDoctrine()->getRepository('SmartSearchSearchBundle:Review');
+		$reviews = $reviewRepository->findByCustomDate($customQueryFromSide,$customQueryToSide);
+		$data = array();
+		if (sizeof($reviews) > 0) {
+			foreach ($reviews as $review) {
+				$serie = $this->getDoctrine()
+							  ->getRepository('SmartSearchSearchBundle:Serie')
+							  ->findOneBy(array('name' => $review->getNameSerie()));
+				$data[] = array($review, $serie);
+			}
+		} 
+		return $data;
 	}
 }
