@@ -8,11 +8,11 @@
 				{{ form_errors(form) }}
 				<div>
 			        {{ form_errors(form.keyword) }}
-			        {{ form_widget(form.keyword) }}
+			        {{ form_widget(form.keyword, {'value' : keyword}) }}
 			    </div>
 			    <div>
 			        {{ form_errors(form.dateCrawl) }}
-			        {{ form_widget(form.dateCrawl) }}
+			        {{ form_widget(form.dateCrawl, { 'value' : dateCrawl }) }}
 			    </div>
 				{%if results is defined%}
 					 <a href="{{path('smart_search_show_graph')}}">Afficher le résultat en graffe </a>

@@ -109,13 +109,13 @@ class SearchController extends Controller
         $keywordArray = explode("+", $keyword);
 
 
-        $keyword = str_replace("+", " ", $keyword);
+        // $keyword = str_replace("+", " ", $keyword);
 
-        $dateCrawl = "2015-11-13";
+        // $dateCrawl = "2015-11-13";
 
         $results = $this->displayResults($keywordArray, $dateCrawl);
 
-        return $this->render('SmartSearchSearchBundle:Search:index.html.twig', array("form" => $form->createView(), "results" => $results, "keywordArray" => $keywordArray, "keyword" => $keyword));
+        // return $this->render('SmartSearchSearchBundle:Search:index.html.twig', array("form" => $form->createView(), "results" => $results, "keywordArray" => $keywordArray, "keyword" => $keyword));
 
         //Condition pour les requêtes de type from:date to:date
         //"#^from:[a-z0-9-+]to:[a-z0-9]#i"
@@ -145,7 +145,7 @@ class SearchController extends Controller
         $em = $this->getDoctrine()->getManager();
         $date = new \DateTime($dateinput);
 
-        $reviews = $em->getRepository('SmartSearchSearchBundle:Review')->findBy(array("dateCrawl" => $date), array(), 1000);
+        $reviews = $em->getRepository('SmartSearchSearchBundle:Review')->findBy(array("dateCrawl" => $date), array(), 900);
         $collection = array();
 
         foreach($reviews as $review) {
