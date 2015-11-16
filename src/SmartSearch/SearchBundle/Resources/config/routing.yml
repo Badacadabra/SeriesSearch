@@ -6,17 +6,23 @@ smart_search_keyword:
     path:     /search/{keyword}/{dateCrawl}
     defaults: { _controller: SmartSearchSearchBundle:Search:search }
     requirements:
-        keyword:   ^[a-zA-Z0-9_+-]+$
+        keyword:   ^[a-zA-Z0-9_+-:]+$
         dateCrawl: ^[0-9-]+$
         
 smart_search_review_display:
-    path:     /review/{id}
+    path:     /review/{id}/{dateCrawl}
     defaults: { _controller: SmartSearchSearchBundle:Search:displayReview }
     requirements:
         id:   ^[0-9]+$
+        dateCrawl: ^[0-9-]+$
 
 smart_search_index:
     path:     /generate-index/{dateinput}
     defaults: { _controller: SmartSearchSearchBundle:Search:createIndex }
     requirements:
         keyword:   ^[0-9-]+$
+        
+smart_search_show_graph:
+    path:     /graph-result
+    defaults: { _controller: SmartSearchSearchBundle:Search:graph }
+
