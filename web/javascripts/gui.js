@@ -60,16 +60,16 @@ $( document ).ready(function() {
         delay: 20000,
         transition: 'zoomOut',
         slides: [
-            { src: "images/home.jpg" },
-            { src: "images/science-fiction.jpg" },
-            { src: "images/war.jpg" },
-            { src: "images/horror.jpg" },
-            { src: "images/road.jpg" },
-            { src: "images/history.jpg" },
-            { src: "images/urban.jpg" },
-            { src: "images/fantasy.jpg" },
-            { src: "images/prison.jpg" },
-            { src: "images/romance.jpg" }
+            { src: "/images/home.jpg" },
+            { src: "/images/science-fiction.jpg" },
+            { src: "/images/war.jpg" },
+            { src: "/images/horror.jpg" },
+            { src: "/images/road.jpg" },
+            { src: "/images/history.jpg" },
+            { src: "/images/urban.jpg" },
+            { src: "/images/fantasy.jpg" },
+            { src: "/images/prison.jpg" },
+            { src: "/images/romance.jpg" }
         ],
         animation: 'kenburns'
     });
@@ -97,6 +97,15 @@ $( document ).ready(function() {
             $( "body" ).vegas('jump', backgroundIndex);
         });
     }
+
+    // Gestion de la date de crawl (dropdown)
+    var selectedCrawlDate = $('.dropdown').dropdown('get value');
+    console.log(selectedCrawlDate);
+
+    $( ".dropdown .item" ).click(function() {
+        selectedItem = $( this ).text();
+        $('.dropdown').dropdown('set value', $.trim(selectedItem));
+    });
 
 });
 
