@@ -96,7 +96,7 @@ class SearchController extends Controller
 
         $keyword = str_replace("+", " ", $keyword);
 
-        $dateCrawl = "2015-11-10";
+        $dateCrawl = "2015-11-13";
 
         $results = $this->displayResults($keywordArray, $dateCrawl);
 
