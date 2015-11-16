@@ -2,117 +2,196 @@
 <html lang='fr'>
     <head>
         <meta charset="UTF-8">
-        <title>Search</title>
+        <title>Series Search</title>
 <!--
         <meta content="user-scalable=no, initial-scale = 1, minimum-scale = 1, maximum-scale = 1, width=device-width" name="viewport">
 -->
-        <link rel="stylesheet" href="style.css" media="all">
+        <link rel="shortcut icon" type="image/png" href="images/clap.png">
+        <link rel="stylesheet" href="css/style.css" media="all">
         <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
         <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.1/jquery.qtip.min.css">
         <link rel="stylesheet" href="semantic/dist/semantic.min.css">
+        <link rel="stylesheet" href="css/vegas.min.css">
     </head>
     <body itemscope itemtype="http://schema.org/WebPage">
         <img id="tv" src="images/tv.png" alt="TV">
-        <img id="remote" src="images/remote-control.png" alt="Télécommande" usemap="#buttons">
+        <div id="remote-wrapper">
+            <img id="remote" src="images/remote-control.png" alt="Télécommande" usemap="#buttons">
+        </div>
         <map name="buttons">
-            <area shape="circle" coords="156,39,12" title="Allumer/Éteindre la TV" id="on-off" />
-            <area shape="rect" coords="30,66,59,84" title="Source indisponible" class="config" />
-            <area shape="rect" coords="62,67,93,84" title="Source indisponible" class="config" />
-            <area shape="rect" coords="97,66,130,83" title="Source principale" id="tv-config" />
-            <area shape="rect" coords="134,66,161,83" title="Source indisponible" class="config" />
-            <area shape="circle" coords="34,108,11" title="Menu" id="menu" />
-            <area shape="circle" coords="154,108,10" title="Source indisponible" class="config" />
-            <area shape="circle" coords="94,174,38" title="Search!" id="enter" />
-            <area shape="circle" coords="95,122,11" title="Toto" class="arrows" />
-            <area shape="circle" coords="147,175,12" title="Toto" class="arrows" />
-            <area shape="circle" coords="95,227,12" title="Toto" class="arrows" />
-            <area shape="circle" coords="44,176,12" title="Toto" class="arrows" />
-            <area shape="circle" coords="34,242,10" title="Aide" id="help-button" />
-            <area shape="circle" coords="154,242,10" title="Infos sur le programme" id="info-button" />
-            <area shape="rect" coords="30,266,59,282" title="Précédent" class="controls" />
-            <area shape="rect" coords="62,267,92,282" title="Play" class="controls" />
-            <area shape="rect" coords="98,267,128,282" title="Stop" class="controls" />
-            <area shape="rect" coords="131,266,160,283" title="Suivant" class="controls" />
-            <area shape="circle" coords="45,315,14" title="Changer de chaîne" class="channels" />
-            <area shape="circle" coords="94,315,14" title="Changer de chaîne" class="channels" />
-            <area shape="circle" coords="144,314,14" title="Changer de chaîne" class="channels" />
-            <area shape="circle" coords="46,356,14" title="Changer de chaîne" class="channels" />
-            <area shape="circle" coords="95,356,14" title="Changer de chaîne" class="channels"/>
-            <area shape="circle" coords="145,357,15" title="Changer de chaîne" class="channels" />
-            <area shape="circle" coords="45,397,15" title="Changer de chaîne" class="channels" />
-            <area shape="circle" coords="95,397,15" title="Changer de chaîne" class="channels" />
-            <area shape="circle" coords="145,398,15" title="Changer de chaîne" class="channels" />
-            <area shape="circle" coords="45,439,15" title="Annuler" id="cancel" />
-            <area shape="circle" coords="95,439,15" title="Changer de chaîne" class="channels" />
-            <area shape="circle" coords="145,439,15" title="Recharger la page" id="reload" />
+            <area shape="circle" coords="156,39,12" title="Allumer/Éteindre la TV" id="on-off" class="buttons" />
+            <area shape="rect" coords="30,66,59,84" title="Source indisponible" class="config buttons" />
+            <area shape="rect" coords="62,67,93,84" title="Source indisponible" class="config buttons" />
+            <area shape="rect" coords="97,66,130,83" title="Source principale" id="tv-config" class="buttons" />
+            <area shape="rect" coords="134,66,161,83" title="Source indisponible" class="config buttons" />
+            <area shape="circle" coords="34,108,11" title="Menu" class="menu-button buttons" />
+            <area shape="circle" coords="154,108,10" title="Source indisponible" class="config buttons" />
+            <area shape="circle" coords="94,174,38" title="Moteur de recherche" class="search-engine-button buttons" />
+            <area shape="circle" coords="95,122,11" title="Visualisation" class="arrows top-arrow buttons" />
+            <area shape="circle" coords="147,175,12" title="Visualisation" class="arrows right-arrow buttons" />
+            <area shape="circle" coords="95,227,12" title="Visualisation" class="arrows bottom-arrow buttons" />
+            <area shape="circle" coords="44,176,12" title="Visualisation" class="arrows left-arrow buttons" />
+            <area shape="circle" coords="34,242,10" title="Aide" class="help-button buttons" />
+            <area shape="circle" coords="154,242,10" title="Infos sur le programme" class="info-button buttons" />
+            <area shape="rect" coords="30,266,59,282" title="Ambiance précédente" id="previous" class="controls buttons" />
+            <area shape="rect" coords="62,267,92,282" title="Lancer le diaporama" id="play" class="controls buttons" />
+            <area shape="rect" coords="98,267,128,282" title="Arrêter le diaporama" id="pause" class="controls buttons" />
+            <area shape="rect" coords="131,266,160,283" title="Ambiance suivante" id="next" class="controls buttons" />
+            <area shape="circle" coords="45,315,14" title="Ambiance « comme à la maison »" class="home buttons" />
+            <area shape="circle" coords="94,315,14" title="Ambiance sci-fi" class="sci-fi buttons" />
+            <area shape="circle" coords="144,314,14" title="Ambiance de guerre" class="war buttons" />
+            <area shape="circle" coords="46,356,14" title="Ambiance épouvante/horreur" class="horror buttons" />
+            <area shape="circle" coords="95,356,14" title="Ambiance « road trip »" class="road buttons" />
+            <area shape="circle" coords="145,357,15" title="Ambiance historique" class="history buttons" />
+            <area shape="circle" coords="45,397,15" title="Ambiance urbaine" class="urban buttons" />
+            <area shape="circle" coords="95,397,15" title="Ambiance fantastique" class="fantasy buttons" />
+            <area shape="circle" coords="145,398,15" title="Ambiance carcérale" class="prison buttons" />
+            <area shape="circle" coords="45,439,15" title="Chaîne indisponible" class="config buttons" />
+            <area shape="circle" coords="95,439,15" title="Ambiance romantique" class="romance buttons" />
+            <area shape="circle" coords="145,439,15" title="Recharger la page" id="reload" class="buttons" />
         </map>
         <div id="screen">
-            <!-- Free text search  -->
-            <div id="free-text-search">
-                <h1>Search</h1>
+            <!-- Moteur de recherche -->
+            <div id="search-engine">
+                <div id="logo">
+                    <img id="clapper" src="images/clapper.png" alt="Clap">
+                    <h1>Series Search</h1>
+                </div>
                 <form id="form" name="form" method="post" action="">
                     <div class="ui fluid massive icon input">
-                        <input placeholder="Une série vous tente ?" type="text">
+                        <input placeholder="Une série vous tente ?" type="text" autofocus>
                         <i class="search icon"></i>
+                    </div>
+                    <div id="time-choice-container" class="ui container">
+                        <div class="ui floating labeled icon dropdown button">
+                            <i class="calendar outline icon"></i>
+                            <span class="text">Départ</span>
+                            <div class="menu">
+                                <div class="header">
+                                    <i class="search icon"></i>
+                                    Date de départ
+                                </div>
+                                <div class="item">
+                                    Toto
+                                </div>
+                                <div class="item">
+                                    Tata
+                                </div>
+                                <div class="item">
+                                    Titi
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui floating labeled icon dropdown button">
+                            <i class="calendar icon"></i>
+                            <span class="text">Arrivée</span>
+                            <div class="menu">
+                                <div class="header">
+                                    <i class="search icon"></i>
+                                    Date d'arrivée
+                                </div>
+                                <div class="item">
+                                    Toto
+                                </div>
+                                <div class="item">
+                                    Tata
+                                </div>
+                                <div class="item">
+                                    Titi
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
+            <!-- Menu -->
+            <div id="menu" style="display:none;">
+                <div>
+                    <button class="ui fluid gray button search-engine-button">Moteur de recherche</button>
+                    <button class="ui fluid gray button top-arrow">Visualisation</button>
+                    <button class="ui fluid gray button right-arrow">Visualisation</button>
+                    <button class="ui fluid gray button bottom-arrow">Visualisation</button>
+                    <button class="ui fluid gray button left-arrow">Visualisation</button>
+                    <button class="ui fluid gray button help-button">Aide</button>
+                    <button class="ui fluid gray button info-button">Infos</button>
+                </div>
+                <div>
+                    <button class="ui fluid gray button home">Ambiance « comme à la maison »</button>
+                    <button class="ui fluid gray button sci-fi">Ambiance sci-fi</button>
+                    <button class="ui fluid gray button war">Ambiance de guerre</button>
+                    <button class="ui fluid gray button horror">Ambiance épouvante/horreur</button>
+                    <button class="ui fluid gray button road">Ambiance « road trip »</button>
+                    <button class="ui fluid gray button history">Ambiance historique</button>
+                    <button class="ui fluid gray button urban">Ambiance urbaine</button>
+                    <button class="ui fluid gray button fantasy">Ambiance fantastique</button>
+                    <button class="ui fluid gray button prison">Ambiance carcérale</button>
+                    <button class="ui fluid gray button romance">Ambiance romantique</button>
+                </div>
+            </div>
             <!-- Aide sur le programme -->
             <div id="help" style="display:none;">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut eu lectus id augue eleifend congue vel sed magna. Ut lobortis, nisi at consequat sollicitudin, arcu odio dignissim mi, sed elementum est nulla sit amet risus. Donec eu dictum lorem. Suspendisse potenti. Donec placerat dui nec auctor cursus. Sed tristique venenatis feugiat. Curabitur cursus dui vitae malesuada accumsan. Praesent eleifend sagittis orci, id placerat libero interdum posuere. In lectus est, bibendum vitae lobortis sit amet, efficitur eget sapien. Morbi laoreet est non felis efficitur vehicula.</p>
-                <p>Mauris facilisis ornare odio vitae mollis. Maecenas tincidunt est nisi, at elementum augue commodo vel. In pretium dolor nibh, eu porta orci cursus a. Curabitur vitae vestibulum justo. Donec finibus pharetra tincidunt. Fusce et nunc orci. Nulla eu consequat nibh. Donec eget mollis purus. Morbi quis orci lacus. Suspendisse venenatis erat nulla, quis sollicitudin ex mollis ut. Donec accumsan lacus eget erat fringilla, et lobortis lectus scelerisque. Etiam vitae ultricies est, id egestas odio. Sed quis dictum odio, nec interdum est. Pellentesque pharetra, velit nec semper tristique, metus mauris accumsan orci, a sagittis risus nunc eget ante. Integer dictum pharetra metus, ut convallis dui sollicitudin sit amet.</p>
+                <p>Ce programme vous permet de chercher des critiques de séries TV dans une large base de données, constituée à partir d'informations et ressources crawlées sur <a href="http://www.senscritique.com/" target="_blank">SensCritique</a>.</p>
+                <p>Pour que votre expérience soit plus ludique et immersive, vous avez la possibilité de configurer votre espace de visualisation, afin qu'il réponde à vos préférences personnelles. Vous pouvez, à ce titre, utiliser la télécommande pour choisir votre ambiance, ou simplement lancer le diaporama qui vous fera voyager dans les différents univers des séries TV.</p>
+                <p>À noter qu'un menu récapitulatif est à votre disposition si vous souhaitez avoir un rapide aperçu des contenus et ambiances disponibles.</p>
+                <p>Bonne recherche !</p>
+                <button class="ui fluid blue button search-engine-button">Go!</button>
             </div>
             <!-- Infos sur le programme -->
-            <div id="about" class="ui cards" style="display:none;">
-                <div class="card" itemprop="author" itemscope itemtype="https://schema.org/Person">
-                    <div class="image">
-                        <img src="images/macky-dieng.jpg" itemprop="image">
-                    </div>
-                    <div class="content">
-                        <span class="header">
-                            <span itemprop="givenName">Macky</span>
-                            <span itemprop="familyName">Dieng</span>
-                        </span>
-                    </div>
-                    <div class="extra content">
-                        <a href="https://github.com/dieng444" target="_blank" itemprop="url">
-                            <i class="github icon"></i>
-                            dieng444
-                        </a>
-                    </div>
+            <div id="info" style="display:none;">
+                <div class="ui info message">
+                    <p class="header">Cette application a été réalisée en 2015 dans le cadre d'un projet du M2-DNR2I à l'université de Caen Normandie.<p>
                 </div>
-                <div class="card" itemprop="author" itemscope itemtype="https://schema.org/Person">
-                    <div class="image">
-                        <img src="images/julien-foucault.jpg" itemprop="image">
+                <div class="ui cards">
+                    <div class="blue card" itemprop="author" itemscope itemtype="https://schema.org/Person">
+                        <div class="image">
+                            <img src="images/macky-dieng.jpg" itemprop="image">
+                        </div>
+                        <div class="content">
+                            <span class="header">
+                                <span itemprop="givenName">Macky</span>
+                                <span itemprop="familyName">Dieng</span>
+                            </span>
+                        </div>
+                        <div class="extra content">
+                            <a href="https://github.com/dieng444" target="_blank" itemprop="url">
+                                <i class="github icon"></i>
+                                dieng444
+                            </a>
+                        </div>
                     </div>
-                    <div class="content">
-                        <span class="header">
-                            <span itemprop="givenName">Julien</span>
-                            <span itemprop="familyName">Foucault</span>
-                        </span>
+                    <div class="white card" itemprop="author" itemscope itemtype="https://schema.org/Person">
+                        <div class="image">
+                            <img src="images/julien-foucault.jpg" itemprop="image">
+                        </div>
+                        <div class="content">
+                            <span class="header">
+                                <span itemprop="givenName">Julien</span>
+                                <span itemprop="familyName">Foucault</span>
+                            </span>
+                        </div>
+                        <div class="extra content">
+                            <a href="https://github.com/JulienNaufaulo" target="_blank" itemprop="url">
+                                <i class="github icon"></i>
+                                JulienNaufaulo
+                            </a>
+                        </div>
                     </div>
-                    <div class="extra content">
-                        <a href="https://github.com/JulienNaufaulo" target="_blank" itemprop="url">
-                            <i class="github icon"></i>
-                            JulienNaufaulo
-                        </a>
-                    </div>
-                </div>
-                <div class="card" itemprop="author" itemscope itemtype="https://schema.org/Person">
-                    <div class="image">
-                        <img src="images/baptiste-vannesson.jpg" itemprop="image">
-                    </div>
-                    <div class="content">
-                        <span class="header">
-                            <span itemprop="givenName">Baptiste</span>
-                            <span itemprop="familyName">Vannesson</span>
-                        </span>
-                    </div>
-                    <div class="extra content">
-                        <a href="https://github.com/Badacadabra" target="_blank" itemprop="url">
-                            <i class="github icon"></i>
-                            Badacadabra
-                        </a>
+                    <div class="red card" itemprop="author" itemscope itemtype="https://schema.org/Person">
+                        <div class="image">
+                            <img src="images/baptiste-vannesson.jpg" itemprop="image">
+                        </div>
+                        <div class="content">
+                            <span class="header">
+                                <span itemprop="givenName">Baptiste</span>
+                                <span itemprop="familyName">Vannesson</span>
+                            </span>
+                        </div>
+                        <div class="extra content">
+                            <a href="https://github.com/Badacadabra" target="_blank" itemprop="url">
+                                <i class="github icon"></i>
+                                Badacadabra
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -124,72 +203,7 @@
         <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.1/jquery.qtip.min.js"></script>
         <script src="semantic/dist/semantic.min.js"></script>
         <script src="javascript/jquery.maphilight.min.js"></script>
-        <script>
-            $( document ).ready(function() {
-                $( "[title!='']" ).qtip({
-                    style: {
-                        classes: 'qtip-light'
-                    }
-                });
-                $( "#remote" ).maphilight();
-                $( "#remote" ).draggable({ containment: "parent", scroll: false });
-
-                // Gestion des clics sur les boutons
-                $( "#on-off" ).click(function() {
-                    $( "#screen" ).fadeToggle();
-                });
-                $( ".config" ).click(function() {
-                    $( "#intermission" ).show();
-                });
-                $( "#tv-config" ).click(function() {
-                    $( "#intermission" ).hide();
-                });
-                $( "#enter" ).click(function() {
-                    $( "#intermission" ).hide();
-                    $( "#about" ).hide();
-                    $( "#help" ).hide();
-                    $( "#free-text-search" ).show();
-                });
-                $( "#help-button" ).click(function() {
-                    $( "#intermission" ).hide();
-                    $( "#free-text-search" ).hide();
-                    $( "#about" ).hide();
-                    $( "#help" ).show();
-                });
-                $( "#info-button" ).click(function() {
-                    $( "#intermission" ).hide();
-                    $( "#free-text-search" ).hide();
-                    $( "#help" ).hide();
-                    $( "#about" ).show();
-
-                });
-                $( "#reload" ).click(function() {
-                    location.reload();
-                });
-            });
-
-            $.fn.maphilight.defaults = {
-                fill: true,
-                fillColor: '000000',
-                fillOpacity: 0.3,
-                stroke: true,
-                strokeColor: 'ffffff',
-                strokeOpacity: 1,
-                strokeWidth: 3,
-                fade: true,
-                alwaysOn: false,
-                neverOn: false,
-                groupBy: false,
-                wrapClass: true,
-                shadow: false,
-                shadowX: 0,
-                shadowY: 0,
-                shadowRadius: 6,
-                shadowColor: '000000',
-                shadowOpacity: 0.8,
-                shadowPosition: 'outside',
-                shadowFrom: false
-            }
-        </script>
+        <script src="javascript/vegas.min.js"></script>
+        <script src="javascript/gui.js"></script>
     </body>
 </html>

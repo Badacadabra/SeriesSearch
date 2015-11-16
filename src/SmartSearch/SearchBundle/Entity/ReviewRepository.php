@@ -24,4 +24,28 @@ class ReviewRepository extends EntityRepository
 		$results = $qb->getQuery()->getResult();
 		return json_encode($results);
 	}
+	/**
+	 * Renvoie les différentes dates de crawl
+	 * */
+	public function findDistinctDate()
+	{
+		return $this->getEntityManager()
+					->createQuery('SELECT DISTINCT r.dateCrawl FROM SmartSearchSearchBundle:Review r ORDER BY r.dateCrawl ASC')
+					->getResult();
+	}
+	/**
+	 * Cherhce et renvoies les critiques situées entre startDate et endDate
+	 * @param date startDate : date de début de la requête le (from)
+	 * @param date endDate : date de fin de la requête le (to)
+	 * */
+	public function findByCustomDate($startDate,$endDate)
+	{
+		$qb = $this->createQueryBuilder('r');
+		$qb->Where('r.datePublished BETWEEN :startDate AND :endDate')
+		   ->setParameter('startDate', new \Datetime($startDate))  // Date début (from)
+		   ->setParameter('endDate', new \Datetime($endDate)); // Date de fin (to)
+		$qb->setMaxResults(10);
+		return $results = $qb->getQuery()->getResult();
+		
+	}
 }

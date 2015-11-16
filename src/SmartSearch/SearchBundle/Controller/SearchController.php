@@ -18,6 +18,9 @@ class SearchController extends Controller
      * */
     public function homeAction(Request $request)
     {
+        
+        //$this->createIndexAction("2015-11-13");
+        
         $form = $this->createFormBuilder()
             ->add('keyword', 'text', 
                 array(
@@ -29,24 +32,29 @@ class SearchController extends Controller
                         )
                     )
                 )
+			->add('dateCrawl','choice', array('label'=>'Gender',
+                'choices'   => $this->getDates(),   
+            ))
             ->add('Go!', 'submit')
             ->getForm();
 
         $form->handleRequest($request);
-
+		
         if ($form->isValid()) {
 
             $keyword = $form->get('keyword')->getData();
             $keywordArray = explode(" ", $keyword);
             $listeKeywords = array();
-
+			
+			
             foreach($keywordArray as $motcle) {
                 $listeKeywords[] = $this->cleanContent($motcle);
             }
 
             $keywordCleaned = implode("+", $listeKeywords);
-
-            return $this->redirect($this->generateUrl('smart_search_keyword', array("keyword" => $keywordCleaned)));
+			$dateCrawl = $form->get('dateCrawl')->getData();
+            return $this->redirect($this->generateUrl('smart_search_keyword', 
+									array("keyword" => $keywordCleaned, "dateCrawl" => $dateCrawl)));
         }
         return $this->render('SmartSearchSearchBundle:Search:index.html.twig', array("form" => $form->createView()));
     }
@@ -57,7 +65,7 @@ class SearchController extends Controller
      * Retourne la liste des résultats pour une expression-clé donnée
      * @return $this
      * */
-    public function searchAction(Request $request, $keyword)
+    public function searchAction(Request $request, $keyword, $dateCrawl)
     {
 
         $form = $this->createFormBuilder()
@@ -71,11 +79,14 @@ class SearchController extends Controller
                         )
                     )
                 )
+			->add('dateCrawl','choice', array('label'=>'Gender',
+                'choices'   => $this->getDates(),   
+            ))
             ->add('Go!', 'submit')
             ->getForm();
 
         $form->handleRequest($request);
-
+        //var_dump($form->get('dateCrawl')->getData());die;
         if ($form->isValid()) {
 
             $keyword = $form->get('keyword')->getData();
@@ -88,11 +99,15 @@ class SearchController extends Controller
             }
             
             $keywordCleaned = implode("+", $listeKeywords);
-
-            return $this->redirect($this->generateUrl('smart_search_keyword', array("keyword" => $keywordCleaned)));
+			$dateCrawl = $form->get('dateCrawl')->getData();
+            return $this->redirect($this->generateUrl('smart_search_keyword',
+								array(
+										"keyword" => $keywordCleaned, 
+										"dateCrawl" => $dateCrawl //Date de crawl provenant du formulaire
+									)));
         }
-
         $keywordArray = explode("+", $keyword);
+
 
         $keyword = str_replace("+", " ", $keyword);
 
@@ -101,10 +116,27 @@ class SearchController extends Controller
         $results = $this->displayResults($keywordArray, $dateCrawl);
 
         return $this->render('SmartSearchSearchBundle:Search:index.html.twig', array("form" => $form->createView(), "results" => $results, "keywordArray" => $keywordArray, "keyword" => $keyword));
+
+        //Condition pour les requêtes de type from:date to:date
+        //"#^from:[a-z0-9-+]to:[a-z0-9]#i"
+        //"#^(from|to)#i"
+        if (preg_match("#^(from|to)#i",$keyword)) {
+			$results = $this->displayResultsByCustomQuery($keywordArray);
+		} else {
+			$results = $this->displayResults($keywordArray, $dateCrawl);
+		}
+		//var_dump($results);die;
+		$keyword = str_replace("+", " ", $keyword);
+        //Formatage des données pour D3.js
+		$this->generateGraphJsonFile($results,$keywordArray);
+        return $this->render('SmartSearchSearchBundle:Search:index.html.twig', 
+								array(
+									  "form" => $form->createView(), "results" => $results,
+									  "keywordArray" => $keywordArray, "keyword" => $keyword,
+									  "dateCrawl" => $dateCrawl //Date de crawl provenant du paramètre de la route
+								));
+
     }
-
-
-
     // ***********************************
     // Méthode de création de l'index à partir des documents scrappés
     // ***********************************
@@ -267,5 +299,81 @@ class SearchController extends Controller
      
         return $str;
     }
-
+    /**
+     * Permet de renvoyer les dates de crawl
+     * */
+    private function getDates()
+    {
+		/*$em = $this->getDoctrine()->getManager();
+        $listDates = $em->getRepository('SmartSearchSearchBundle:Review')->findDistinctDate();
+        $dates = array();
+        foreach($listDates as $date) {
+			$formatedDate = $date['dateCrawl']->format('Y-m-d');
+			$dates[$formatedDate] = $formatedDate; //Pour avoir la date comme value dans les balises "option" de la select list.
+		}*/
+		$dates = array("2015-11-13" => "2015-11-13","2015-11-10" => "2015-11-10");
+		return $dates;
+	}
+	/**
+	 * Permet d'afficher site des critiques
+	 * @param int id : l'identifiant de la critique
+	 * @param dateCrawl : la date du crawl, enfin de pouvoir
+	 * récupérer le bon fichier html pour chaque critique
+	 * */
+	public function displayReviewAction($id,$dateCrawl) 
+	{
+		$review = $this->getDoctrine()->getRepository("SmartSearchSearchBundle:Review")->findOneBy(array("idReview" =>$id ));
+		$template = $review->getFile($dateCrawl);
+		ob_start();
+		require_once($template);
+		$html = ob_get_contents();
+		ob_end_clean();
+		return new Response($html);
+	}
+	public function graphAction()
+	{
+		return $this->render("SmartSearchSearchBundle:Search:result-graph.html.twig",array());
+	}
+	/**
+	 * Permet de créer le fichier json pour le graphe
+	 * @param array $results : le résultat à partir du 
+	 * quel le fichier json sera créé
+	 * @param string $keywordArray : mot clé déclencheur de la requête
+	 * */
+	public function generateGraphJsonFile(array $results, $keywordArray)
+	{
+		if (sizeof($results) > 0) {
+			$nodes = array();
+			$nodes[] = array("name" => implode(" ",$keywordArray));
+			$links = array();
+			$j = 1;
+			for( $i =0; $i < sizeof($results); $i++ ) {
+				$nodes[] = array("name" => $results[$i][0]->getTitle());
+				$links[] = array("source" => 0, "target" => $j++ );
+			}
+			$data = array("nodes" => $nodes, "links"=> $links);
+			file_put_contents(__DIR__.'/../../../../web/tmp/search_result.json', json_encode($data));
+		}
+	}
+	/**
+	 * Renvoie le résultat des requêtes du type from:Startdate to:dateEndDate
+	 * @param array $query : la requête à analyser
+	 * */
+	public function displayResultsByCustomQuery($query)
+	{
+		$customQueryFromSide = explode(":",$query[0])[1]; //La partie "from" de la requête
+		$customQueryToSide = explode(":",$query[1])[1]; //La partie "to" de la requête
+		$reviewRepository = $this->getDoctrine()->getRepository('SmartSearchSearchBundle:Review');
+		$reviews = $reviewRepository->findByCustomDate($customQueryFromSide,$customQueryToSide);
+		$data = array();
+		if (sizeof($reviews) > 0) {
+			foreach ($reviews as $review) {
+				$serie = $this->getDoctrine()
+							  ->getRepository('SmartSearchSearchBundle:Serie')
+							  ->findOneBy(array('name' => $review->getNameSerie()));
+				$data[] = array($review, $serie);
+			}
+		} 
+		return $data;
+	}
 }

@@ -10,19 +10,24 @@
 			        {{ form_errors(form.keyword) }}
 			        {{ form_widget(form.keyword) }}
 			    </div>
-			  
+			    <div>
+			        {{ form_errors(form.dateCrawl) }}
+			        {{ form_widget(form.dateCrawl) }}
+			    </div>
+				{%if results is defined%}
+					 <a href="{{path('smart_search_show_graph')}}">Afficher le résultat en graffe </a>
+				{%endif%}
 			{{ form_end(form) }}
 		</div>
 
 	</div>
-	
 	{% if results is defined %}
-
 		{% if results|length > 0 %}
 
 			<div id="results">
 				<h1>TOP 10 sur l'expression "{{keyword}}"</h1>
-				<p>Résultats via le crawl du {{results[0][1].dateCrawl|date('Y-m-d')}}</p>
+				<p>Résultats via le crawl du {{dateCrawl}}</p>
+				<!-- <p>Résultats via le crawl du {{results[0][1].dateCrawl|date('Y-m-d')}}</p> -->
 				{% for critique in results %}
 					<div class="result">
 						<div class="image">
@@ -31,7 +36,7 @@
 						<div class="description">
 							<h2>{{critique[0].title}}</h2>
 							<p>{{critique[0].content|truncate(200, true, '...')}}</p>
-							<p><a href="{{path('smart_search_review_display', {'id': critique[0].idReview})}}">Voir la page</a></p>
+							<p><a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}">Voir la page</a></p>
 						</div>
 					</div>
 				{% endfor %}

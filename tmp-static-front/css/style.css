@@ -1,0 +1,154 @@
+* {
+    border: 0;
+    padding: 0;
+    margin: 0;
+}
+
+/*
+@font-face {
+    font-family: 'blackcasperregular';
+    src: url('../font/BlackCasper/blackcasper-webfont.eot');
+    src: url('../font/BlackCasper/blackcasper-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../font/BlackCasper/blackcasper-webfont.woff2') format('woff2'),
+         url('../font/BlackCasper/blackcasper-webfont.woff') format('woff'),
+         url('../font/BlackCasper/blackcasper-webfont.ttf') format('truetype'),
+         url('../font/BlackCasper/blackcasper-webfont.svg#blackcasperregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+*/
+
+@font-face {
+    font-family: 'misprojectregular';
+    src: url('../font/misproject/misproject-webfont.eot');
+    src: url('../font/misproject/misproject-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../font/misproject/misproject-webfont.woff2') format('woff2'),
+         url('../font/misproject/misproject-webfont.woff') format('woff'),
+         url('../font/misproject/misproject-webfont.ttf') format('truetype'),
+         url('../font/misproject/misproject-webfont.svg#misprojectregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+img#tv, div#screen, img#intermission {
+    position: absolute !important;
+    top: 0; left: 0; bottom: 0; right: 0;
+    margin: auto !important;
+}
+
+img#tv {
+    width: 800px;
+    height: 658px;
+}
+
+div#remote-wrapper {
+    position: absolute !important;
+    top: 15%;
+    left: 15%;
+    z-index: 2;
+}
+
+div#remote-wrapper:hover {
+    cursor: move !important;
+}
+
+div#remote-wrapper img#remote {
+    width: 189px;
+    height: 492px;
+}
+
+.buttons:hover {
+    cursor: pointer !important;
+}
+
+div#screen {
+    width: 750px !important;
+    height: 470px !important;
+    background-color: white !important;
+    position: relative;
+    top: -135px;
+}
+
+div#screen div#search-engine div#logo {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    margin: 30px !important;
+}
+
+div#screen div#search-engine div#logo img#clapper {
+    height: 55px;
+    margin-right: 20px;
+}
+
+div#screen div#search-engine div#logo h1 {
+    display: inline;
+    font-size: 50px;
+    font-weight: initial;
+    text-align: center;
+    font-family: 'misprojectregular', sans-serif;
+}
+
+div#screen div#search-engine form#form {
+    width: 90%;
+    margin: auto;
+}
+
+div#screen div#search-engine form#form div#time-choice-container {
+    margin-top: 42px;
+    text-align: center;
+}
+
+div#screen div#menu, div#screen div#help {
+    width: 90%;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+div#screen div#menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+div#screen div#menu button {
+    margin: 5px 0;
+}
+
+div#screen div#menu > div {
+    width: 48%;
+}
+
+div#screen div#help {
+    font-size: large;
+}
+
+div#screen div#info {
+    width: 90%;
+    height: 470px !important;
+    margin: auto;
+}
+
+div#screen div#info .message {
+    text-align: center;
+    margin: 30px 0;
+    font-size: 15px;
+}
+
+div#screen div#info .cards {
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+div#screen div#info .cards .card {
+    width: 200px !important;
+}
+
+.vegas-timer {
+    height: 5px !important;
+}
+
+.vegas-timer-progress {
+    background: #81DF38 none repeat scroll 0 0 !important;
+}
