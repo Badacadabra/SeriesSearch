@@ -1,6 +1,9 @@
 {% extends "SmartSearchSearchBundle::layout.html.twig" %}
 {% block css %} 
+	<!--
 	<link href="/stylesheets/d3-tip.css" media="all" rel="stylesheet" type="text/css" />
+	-->
+	<link rel="stylesheet" href="{{ asset('bundles/smartsearchsearch/css/d3-tip.css') }}" type="text/css" />
 {% endblock %}   
 {%block content%}
 	<div id="screen">
@@ -8,7 +11,13 @@
 {%endblock%}
 
 {%block javascripts%}
+	<!--
 	<script type="text/javascript" src="/javascripts/app/d3.min.js"></script> 
 	<script type="text/javascript" src="/javascripts/app/d3.type.js"></script> 
-	<script type="text/javascript" src="/javascripts/app/loadGraph.js"></script> 
+	<script type="text/javascript" src="/javascripts/app/loadGraph.js"></script>
+	-->
+
+	<link rel="stylesheet" href="{{ asset('bundles/smartsearchsearch/js/app/d3.min.js') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ asset('bundles/smartsearchsearch/js/app/d3.type.js') }}" type="text/css" />
+	<link rel="stylesheet" href="{{ asset('bundles/smartsearchsearch/js/app/loadGraph.js') }}" type="text/css" />
 {%endblock%}

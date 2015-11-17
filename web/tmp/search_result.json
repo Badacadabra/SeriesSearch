@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 {"nodes":[{"name":"toto"},{"name":"L'humour sous toutes ses formes"},{"name":"Hostages"}],"links":[{"source":0,"target":1},{"source":0,"target":2}]}
+=======
+{"nodes":[{"name":"american"},{"name":"Need for speed !"},{"name":"Blue Bloods"}],"links":[{"source":0,"target":1},{"source":0,"target":2}]}
+>>>>>>> 14a9bdd5c841b38effa2754947fb030f9e0ca215

@@ -34,7 +34,7 @@ class ReviewRepository extends EntityRepository
 					->getResult();
 	}
 	/**
-	 * Cherhce et renvoies les critiques situées entre startDate et endDate
+	 * Cherche et renvoies les critiques situées entre startDate et endDate
 	 * @param date startDate : date de début de la requête le (from)
 	 * @param date endDate : date de fin de la requête le (to)
 	 * */
