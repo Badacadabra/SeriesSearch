@@ -5,6 +5,20 @@ $( document ).ready(function() {
         .dropdown()
     ;
 
+    // Activation et gestion des datepickers
+    $( "#from" ).datepicker({ dateFormat: "yy-mm-dd" });
+    $( "#to" ).datepicker({ dateFormat: "yy-mm-dd" });
+
+    $( "#from" ).change(function() {
+        var value = $( this ).val();
+        $( "#form_keyword" ).val( "FROM:" + value );
+    });
+
+    $( "#to" ).change(function() {
+        var value = $( this ).val();
+        $( "#form_keyword" ).val( $( "#form_keyword" ).val() + " TO:" + value );
+    });
+
     // Activation des tooltips personnalisées
     $( "[title!='']" ).qtip({
         style: {
@@ -19,21 +33,36 @@ $( document ).ready(function() {
     $( "#remote-wrapper" ).draggable({ containment: "parent", scroll: false });
 
     // Gestion des clics sur les boutons simples
+    var intermission = null;
+
     $( "#on-off" ).click(function() {
         $( "#screen" ).fadeToggle();
+        if (intermission != null)
+            intermission.pause();
+        var onOff = new Audio("/sounds/tv-on-off.ogg");
+        onOff.play();
     });
 
     $( ".config" ).click(function() {
         $( "#intermission" ).show();
+        intermission = new Audio("/sounds/intermission.ogg");
+        intermission.play();
     });
 
     $( "#tv-config" ).click(function() {
         $( "#intermission" ).hide();
+        if (intermission != null)
+            intermission.pause();
+    });
+
+    $( "#mute" ).click(function() {
+        var audio = $( "audio" );
+        audio[0].pause();
     });
 
     // Gestion dynamique de l'affichage dans l'écran
     var screenButtons = ["search-engine-button", "menu-button", "help-button", "info-button"];
-    var screenContents = ["search-engine", "menu", "help", "info", "intermission"];
+    var screenContents = ["search-engine", "menu", "help", "info", "serps", "intermission"];
 
     for (var i = 0; i < screenButtons.length; i++) {
         switchScreenContent(screenButtons[i], screenContents[i]);
@@ -48,6 +77,9 @@ $( document ).ready(function() {
                     $( "#" + screenContents[i] ).hide();
                 }
             }
+            // Ajustement pour éventuellement couper le son de l'intermission
+            if (intermission != null)
+                intermission.pause();
         });
     }
 
@@ -55,7 +87,7 @@ $( document ).ready(function() {
         location.reload();
     });
 
-    // Gestion du fond d'écran
+    // Gestion des ambiances
     $( "body" ).vegas({
         delay: 20000,
         transition: 'zoomOut',
@@ -71,7 +103,48 @@ $( document ).ready(function() {
             { src: "/images/prison.jpg" },
             { src: "/images/romance.jpg" }
         ],
-        animation: 'kenburns'
+        animation: 'kenburns',
+        walk: function (index, slideSettings) {
+            // console.log("Slide index " + index + " image " + slideSettings.src);
+            var audio = $( "audio" );
+            switch(index) {
+                case 0:
+                    sound = "home";
+                    break;
+                case 1:
+                    sound = "sci-fi";
+                    break;
+                case 2:
+                    sound = "war";
+                    break;
+                case 3:
+                    sound = "horror";
+                    break;
+                case 4:
+                    sound = "road";
+                    break;
+                case 5:
+                    sound = "history";
+                    break;
+                case 6:
+                    sound = "urban";
+                    break;
+                case 7:
+                    sound = "fantasy";
+                    break;
+                case 8:
+                    sound = "prison";
+                    break;
+                case 9:
+                    sound = "romance";
+                    break;
+            }
+
+            $( "audio source" ).attr( "src", "/sounds/" + sound + ".ogg");
+            audio[0].pause();
+            audio[0].load();
+
+        }
     });
 
     $( "body" ).vegas('pause');
@@ -100,12 +173,16 @@ $( document ).ready(function() {
 
     // Gestion de la date de crawl (dropdown)
     var selectedCrawlDate = $('.dropdown').dropdown('get value');
-    console.log(selectedCrawlDate);
 
     $( ".dropdown .item" ).click(function() {
         selectedItem = $( this ).text();
         $('.dropdown').dropdown('set value', $.trim(selectedItem));
     });
+
+    // Gestion des SERPs
+    if ( $( "#results" ).length ) {
+        $( "#search-engine" ).hide();
+    }
 
 });
 
