@@ -174,3 +174,30 @@ div#screen div#info .cards .card {
 div#mCSB_1_container {
     margin-right: 0;
 }
+
+.node {
+    stroke: #1B1C1D;
+    stroke-width: 4px;
+    fill: silver;
+    box-shadow: 0 0 5px black;
+    transition: fill .3s ease;
+    cursor: pointer;
+}
+
+.node:hover {
+    fill: #4485F5;
+}
+
+.link {
+    stroke: #1B1C1D;
+    stroke-width: 4px;
+}
+
+g:first-of-type > .node {
+    fill: gray;
+}
+
+g:first-of-type > .node:hover {
+    fill: gray;
+    cursor: move;
+}

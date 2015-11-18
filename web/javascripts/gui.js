@@ -61,8 +61,8 @@ $( document ).ready(function() {
     });
 
     // Gestion dynamique de l'affichage dans l'écran
-    var screenButtons = ["search-engine-button", "menu-button", "help-button", "info-button"];
-    var screenContents = ["search-engine", "menu", "help", "info", "serps", "intermission"];
+    var screenButtons = ["search-engine-button", "serps-button", "force-layout-button", "timeline-button", "pie-chart-button", "menu-button", "help-button", "info-button"];
+    var screenContents = ["search-engine", "serps", "force-layout", "timeline", "pie-chart", "menu", "help", "info", "intermission"];
 
     for (var i = 0; i < screenButtons.length; i++) {
         switchScreenContent(screenButtons[i], screenContents[i]);

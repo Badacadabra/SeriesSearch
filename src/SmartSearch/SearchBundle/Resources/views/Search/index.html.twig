@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="/semantic/dist/semantic.min.css">
         <link rel="stylesheet" href="/stylesheets/vegas.min.css">
         <link rel="stylesheet" href="/stylesheets/jquery.mCustomScrollbar.min.css">
+        <link rel="stylesheet" href="/stylesheets/d3-tip.css">
     </head>
     <body itemscope itemtype="http://schema.org/WebPage">
         <audio autoplay loop>
@@ -32,10 +33,10 @@
             <area shape="circle" coords="34,108,11" title="Menu" class="menu-button buttons" />
             <area shape="circle" coords="154,108,10" title="Source indisponible" class="config buttons" />
             <area shape="circle" coords="94,174,38" title="Moteur de recherche" class="search-engine-button buttons" />
-            <area shape="circle" coords="95,122,11" title="Visualisation" class="arrows top-arrow buttons" />
-            <area shape="circle" coords="147,175,12" title="Visualisation" class="arrows right-arrow buttons" />
-            <area shape="circle" coords="95,227,12" title="Visualisation" class="arrows bottom-arrow buttons" />
-            <area shape="circle" coords="44,176,12" title="Visualisation" class="arrows left-arrow buttons" />
+            <area shape="circle" coords="95,122,11" title="Page de résultats" class="arrows serps-button buttons" />
+            <area shape="circle" coords="147,175,12" title="Diagramme de force" class="arrows force-layout-button buttons" />
+            <area shape="circle" coords="95,227,12" title="Frise chronologique" class="arrows timeline-button buttons" />
+            <area shape="circle" coords="44,176,12" title="Camembert" class="arrows pie-chart-button buttons" />
             <area shape="circle" coords="34,242,10" title="Aide" class="help-button buttons" />
             <area shape="circle" coords="154,242,10" title="Infos sur le programme" class="info-button buttons" />
             <area shape="rect" coords="30,266,59,282" title="Ambiance précédente" id="previous" class="controls buttons" />
@@ -121,6 +122,10 @@
                     {% endif %}
                 {% endif %}
             </div>
+            <!-- Visualisation -->
+            <div id="force-layout" style="display:none;"></div>
+            <div id="timeline" style="display:none;"></div>
+            <div id="pie-chart" style="display:none;"></div>
             <!-- Menu -->
             <div id="menu" style="display:none;">
                 <div>
@@ -222,6 +227,11 @@
         <script src="/javascripts/jquery.maphilight.min.js"></script>
         <script src="/javascripts/vegas.min.js"></script>
         <script src="/javascripts/jquery.mCustomScrollbar.concat.min.js"></script>
+        <script src="/javascripts/d3.min.js"></script>
+        <script src="/javascripts/d3.tip.js"></script>
+        <script src="/javascripts/loadGraph.js"></script>
+        <script src="/javascripts/d3pie.min.js"></script>
+        <script src="/javascripts/loadPieChart.js"></script>
         <script src="/javascripts/gui.js"></script>
     </body>
 </html>
