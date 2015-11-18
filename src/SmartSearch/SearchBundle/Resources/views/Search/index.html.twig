@@ -101,15 +101,23 @@
             <!-- SERPs -->
             <div id="serps">
                 {% if results is defined %}
-                    {% if results|length > 0 %}
+					{%if results.serie != null%}
+						<div id="specific-serie">
+							<p>
+								<b>{{results.serie.name}}</b> est une série de type <b>{{results.serie.genre}}</b> réalisé en {{results.serie.dateRelease}}<br>
+								Directeur : {{results.serie.director}}<br>
+								Personnages : {{results.serie.actors}}
+							</p>	
+						</div>
+					{%endif%}
+                    {% if results.res|length > 0 %}
                         <div id="results">
                             <h1>TOP 10 sur l'expression "{{keyword}}"</h1>
                             <p>Résultats via le crawl du {{dateCrawl}}</p>
-                            <!-- <p>Résultats via le crawl du {{results[0][1].dateCrawl|date('Y-m-d')}}</p> -->
-                            {% for critique in results %}
+                            {% for critique in results.res %}
                                 <div class="result">
                                     <div class="image">
-                                        <img src="{{ asset(critique[1].getWebPath) }}" />
+                                        <img src="{{ asset(critique[1].getWebPath()) }}" />
                                     </div>
                                     <div class="description">
                                         <h2>{{critique[0].title}}</h2>
