@@ -27,6 +27,10 @@ img#tv {
     height: 658px;
 }
 
+img#intermission {
+    transform: translateY(-68px);
+}
+
 div#remote-wrapper {
     position: absolute !important;
     top: 15%;
@@ -53,6 +57,7 @@ div#screen {
     background-color: white !important;
     position: relative;
     top: -135px;
+    overflow: auto;
 }
 
 div#screen div#search-engine div#logo {
@@ -75,14 +80,46 @@ div#screen div#search-engine div#logo h1 {
     font-family: 'misprojectregular', sans-serif;
 }
 
+div#screen div#search-engine div#logo a{
+    color: #000;
+}
+
+
 div#screen div#search-engine form {
     width: 90%;
     margin: auto;
 }
 
-div#screen div#search-engine form div#time-choice-container {
+div#screen div#search-engine form div#crawlSelection {
     margin-top: 42px;
     text-align: center;
+}
+
+div#screen div#search-engine div#from-to {
+    margin-top: 15px !important;
+    text-align: center;
+}
+
+div#screen div#search-engine div#from-to input {
+    padding: 11px 0 !important;
+}
+
+div#screen div#serps div#results {
+    margin: 15px;
+}
+
+div#screen div#serps div#results div.result {
+    display: flex;
+}
+
+div#screen div#serps div#results div.result div.image img {
+    max-width: 200px;
+    margin-right: 20px;
+}
+
+div#screen div#serps div#results div.result div.description h2 {
+    font-size: large;
+    margin-bottom: 15px !important;
 }
 
 div#screen div#menu, div#screen div#help {
@@ -139,3 +176,33 @@ div#screen div#info .cards .card {
     background: #81DF38 none repeat scroll 0 0 !important;
 }
 
+div#mCSB_1_container {
+    margin-right: 0;
+}
+
+.node {
+    stroke: #1B1C1D;
+    stroke-width: 4px;
+    fill: silver;
+    box-shadow: 0 0 5px black;
+    transition: fill .3s ease;
+    cursor: pointer;
+}
+
+.node:hover {
+    fill: #4485F5;
+}
+
+.link {
+    stroke: #1B1C1D;
+    stroke-width: 4px;
+}
+
+g:first-of-type > .node {
+    fill: gray;
+}
+
+g:first-of-type > .node:hover {
+    fill: gray;
+    cursor: move;
+}

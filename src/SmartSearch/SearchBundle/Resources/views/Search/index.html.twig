@@ -12,8 +12,14 @@
         <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.1/jquery.qtip.min.css">
         <link rel="stylesheet" href="/semantic/dist/semantic.min.css">
         <link rel="stylesheet" href="/stylesheets/vegas.min.css">
+        <link rel="stylesheet" href="/stylesheets/jquery.mCustomScrollbar.min.css">
+        <link rel="stylesheet" href="/stylesheets/d3-tip.css">
     </head>
     <body itemscope itemtype="http://schema.org/WebPage">
+        <audio autoplay loop>
+            Votre navigateur ne supporte pas l'élément <code>audio</code>.
+            <source src="/sounds/home.ogg" type="audio/ogg">
+        </audio>
         <img id="tv" src="/images/tv.png" alt="TV">
         <div id="remote-wrapper">
             <img id="remote" src="/images/remote-control.png" alt="Télécommande" usemap="#buttons">
@@ -27,10 +33,10 @@
             <area shape="circle" coords="34,108,11" title="Menu" class="menu-button buttons" />
             <area shape="circle" coords="154,108,10" title="Source indisponible" class="config buttons" />
             <area shape="circle" coords="94,174,38" title="Moteur de recherche" class="search-engine-button buttons" />
-            <area shape="circle" coords="95,122,11" title="Visualisation" class="arrows top-arrow buttons" />
-            <area shape="circle" coords="147,175,12" title="Visualisation" class="arrows right-arrow buttons" />
-            <area shape="circle" coords="95,227,12" title="Visualisation" class="arrows bottom-arrow buttons" />
-            <area shape="circle" coords="44,176,12" title="Visualisation" class="arrows left-arrow buttons" />
+            <area shape="circle" coords="95,122,11" title="Page de résultats" class="arrows serps-button buttons" />
+            <area shape="circle" coords="147,175,12" title="Diagramme de force" class="arrows force-layout-button buttons" />
+            <area shape="circle" coords="95,227,12" title="Frise chronologique" class="arrows timeline-button buttons" />
+            <area shape="circle" coords="44,176,12" title="Camembert" class="arrows pie-chart-button buttons" />
             <area shape="circle" coords="34,242,10" title="Aide" class="help-button buttons" />
             <area shape="circle" coords="154,242,10" title="Infos sur le programme" class="info-button buttons" />
             <area shape="rect" coords="30,266,59,282" title="Ambiance précédente" id="previous" class="controls buttons" />
@@ -46,11 +52,11 @@
             <area shape="circle" coords="45,397,15" title="Ambiance urbaine" class="urban buttons" />
             <area shape="circle" coords="95,397,15" title="Ambiance fantastique" class="fantasy buttons" />
             <area shape="circle" coords="145,398,15" title="Ambiance carcérale" class="prison buttons" />
-            <area shape="circle" coords="45,439,15" title="Chaîne indisponible" class="config buttons" />
+            <area shape="circle" coords="45,439,15" title="Couper le son" id="mute" class="buttons" />
             <area shape="circle" coords="95,439,15" title="Ambiance romantique" class="romance buttons" />
             <area shape="circle" coords="145,439,15" title="Recharger la page" id="reload" class="buttons" />
         </map>
-        <div id="screen">
+        <div id="screen" class="mCustomScrollbar" data-mcs-theme="dark">
             <!-- Moteur de recherche -->
             <div id="search-engine">
                 <div id="logo">
@@ -61,44 +67,53 @@
                     {{ form_errors(form) }}
                     <div class="ui fluid massive icon input">
                         {{ form_errors(form.keyword) }}
-                        {{ form_widget(form.keyword, { 'attr': { 'placeholder': "Une série vous tente ?", 'autofocus': "autofocus" } }) }}
+                        {{ form_widget(form.keyword, { 'value' : keyword, 'attr': { 'placeholder': "Une série vous tente ?", 'autofocus': "autofocus" } }) }}
                         <i class="search icon"></i>
                     </div>
-                    <div id="time-choice-container" class="ui container">
+                    <div id="crawlSelection" class="ui container">
                         <div class="ui floating labeled icon dropdown button">
-                            <input id="selectedCrawlDate" name="selectedCrawlDate" type="hidden" value="2015-11-13">
-                            <i class="history icon"></i>
+                            <input id="selectedCrawlDate" name="selectedCrawlDate" type="hidden" value="{{dateCrawl}}">
+                            <i class="archive icon"></i>
                             <span class="text">Archives</span>
                             <div class="menu">
                                 <div class="header">
                                     <i class="history icon"></i>
                                     Dates de crawl
                                 </div>
-                                <div class="item" data-value="2015-11-13">
-                                    2015-11-13
-                                </div>
-                                <div class="item" data-value="2015-11-10">
-                                    2015-11-10
-                                </div>
-                                <div class="item" data-value="2015-11-09">
-                                    2015-11-09
-                                </div>
+                                {% for listDate in datesCrawl %}
+                                    <div class="item" data-value="{{listDate.dateCrawl|date("Y-m-d")}}">
+                                        {{listDate.dateCrawl|date("Y-m-d")}}
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
-                        <button type="button" class="ui gray button from">Date de début</button>
-                        <button type="button" class="ui gray button to">Date de fin</button>
                     </div>
                 {{ form_end(form) }}
+                <div id="from-to">
+                    <input id="from" type="text" class="ui blue button" value="Date de début">
+                    <input id="to" type="text" class="ui blue button" value="Date de fin">
+                </div>
+            </div>
+            <!-- SERPs -->
+            <div id="serps">
                 {% if results is defined %}
-                    {% if results|length > 0 %}
+					{%if results.serie != null%}
+						<div id="specific-serie">
+							<p>
+								<b>{{results.serie.name}}</b> est une série de type <b>{{results.serie.genre}}</b> réalisé en {{results.serie.dateRelease}}<br>
+								Directeur : {{results.serie.director}}<br>
+								Personnages : {{results.serie.actors}}
+							</p>	
+						</div>
+					{%endif%}
+                    {% if results.res|length > 0 %}
                         <div id="results">
                             <h1>TOP 10 sur l'expression "{{keyword}}"</h1>
                             <p>Résultats via le crawl du {{dateCrawl}}</p>
-                            <!-- <p>Résultats via le crawl du {{results[0][1].dateCrawl|date('Y-m-d')}}</p> -->
-                            {% for critique in results %}
+                            {% for critique in results.res %}
                                 <div class="result">
                                     <div class="image">
-                                        <img src="{{ asset(critique[1].getWebPath) }}" />
+                                        <img src="{{ asset(critique[1].getWebPath()) }}" />
                                     </div>
                                     <div class="description">
                                         <h2>{{critique[0].title}}</h2>
@@ -111,6 +126,10 @@
                     {% endif %}
                 {% endif %}
             </div>
+            <!-- Visualisation -->
+            <div id="force-layout" style="display:none;"></div>
+            <div id="timeline" style="display:none;"></div>
+            <div id="pie-chart" style="display:none;"></div>
             <!-- Menu -->
             <div id="menu" style="display:none;">
                 <div>
@@ -202,15 +221,21 @@
                     </div>
                 </div>
             </div>
-            <!-- Source indisponible -->
-            <img id="intermission" src="/images/intermission.png" alt="Intermission" style="display:none;">
         </div>
+        <!-- Source indisponible -->
+        <img id="intermission" src="/images/intermission.png" alt="Intermission" style="display:none;">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
         <script src="http://cdnjs.cloudflare.com/ajax/libs/qtip2/2.2.1/jquery.qtip.min.js"></script>
         <script src="/semantic/dist/semantic.min.js"></script>
         <script src="/javascripts/jquery.maphilight.min.js"></script>
         <script src="/javascripts/vegas.min.js"></script>
+        <script src="/javascripts/jquery.mCustomScrollbar.concat.min.js"></script>
+        <script src="/javascripts/d3.min.js"></script>
+        <script src="/javascripts/d3.tip.js"></script>
+        <script src="/javascripts/loadGraph.js"></script>
+        <script src="/javascripts/d3pie.min.js"></script>
+        <script src="/javascripts/loadPieChart.js"></script>
         <script src="/javascripts/gui.js"></script>
     </body>
 </html>

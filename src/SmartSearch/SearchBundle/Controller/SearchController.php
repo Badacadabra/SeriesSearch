@@ -18,6 +18,10 @@ class SearchController extends Controller
      * */
     public function homeAction(Request $request)
     {
+        $reviewRepository = $this->getDoctrine()->getRepository('SmartSearchSearchBundle:Review');
+        $datesCrawl = $reviewRepository->findDistinctDate();
+        $defaultDateCrawl = "2015-11-13";
+        $keyword='';
 
         $form = $this->createFormBuilder()
             ->add('keyword', 'text', array('required'=>false))
@@ -35,7 +39,7 @@ class SearchController extends Controller
             return $this->redirect($this->generateUrl('smart_search_keyword',
                                     array("keyword" => $keywordCleaned, "dateCrawl" => $dateCrawl)));
         }
-        return $this->render('SmartSearchSearchBundle:Search:index.html.twig', array("form" => $form->createView()));
+        return $this->render('SmartSearchSearchBundle:Search:index.html.twig', array("form" => $form->createView(), "keyword" => $keyword, "dateCrawl" => $defaultDateCrawl, "datesCrawl" => $datesCrawl));
     }
     /**
      * Retourne la liste des résultats pour une expression-clé donnée
@@ -43,6 +47,8 @@ class SearchController extends Controller
      * */
     public function searchAction(Request $request, $keyword, $dateCrawl)
     {
+        $reviewRepository = $this->getDoctrine()->getRepository('SmartSearchSearchBundle:Review');
+        $datesCrawl = $reviewRepository->findDistinctDate();
 
         $form = $this->createFormBuilder()
             ->add('keyword', 'text', array('required'=>false))
@@ -66,12 +72,12 @@ class SearchController extends Controller
                                     )));
         }
         $keywordArray = explode("+", $keyword);
-        $results = $this->displayResults($keywordArray, $dateCrawl);
+        //$results = $this->displayResults($keywordArray, $dateCrawl);
         //Condition pour les requêtes de type from:date to:date
         if (preg_match("#^from:\d{4}-\d{2}-\d{2}\+to:\d{4}-\d{2}-\d{2}$#i",$keyword)) {
             $results = $this->displayResultsByCustomQuery($keywordArray);
         } else {
-            $results = $this->displayResults($keywordArray, $dateCrawl);
+           $results = $this->displayResults($keywordArray, $dateCrawl, $keyword);
         }
         $keyword = str_replace("+", " ", $keyword);
 		$this->generateGraphJsonFile($results,$keywordArray);
@@ -79,6 +85,7 @@ class SearchController extends Controller
 								array(
 									  "form" => $form->createView(), "results" => $results,
 									  "keywordArray" => $keywordArray, "keyword" => $keyword,
+                                      "datesCrawl" => $datesCrawl,
 									  "dateCrawl" => $dateCrawl //Date de crawl provenant du paramètre de la route
 								));
 
@@ -134,8 +141,22 @@ class SearchController extends Controller
         return $this->redirect($this->generateUrl('smart_search_homepage', array()));
 
     }
-
-
+	/**
+     * Vérifie si la requête correspond à une entité série spécifique
+     * @param string serie : la requête tapée
+     * @return boolean
+     * */
+    public function isSerieEntity($query)
+    {
+		$series = $this->getDoctrine()->getRepository("SmartSearchSearchBundle:Serie")->findAll();
+		foreach($series as $serie) {
+			if (strtolower($serie->getName()) == $query) {
+				//var_dump($serie);die;
+				return $serie;
+			}
+		}
+		return false;
+	}
     // ***********************************
     // Méthode de récupération de l'index
     // ***********************************
@@ -191,22 +212,29 @@ class SearchController extends Controller
     // ***********************************
     // Méthode pour récupérer la liste des entités à partir des résultats obtenus par la méthode getResults()
     // ***********************************
-    private function displayResults($query, $dateCrawl)
+    private function displayResults($query, $dateCrawl, $keyword)
     {
         $em = $this->getDoctrine()->getManager();
 
         $results = $this->getResults($query, $dateCrawl);
         $reviews = array();
-
+		$res = array();
         foreach($results as $idReview => $score) {
 
             $review = $em->getRepository('SmartSearchSearchBundle:Review')->find($idReview);
             $serie = $em->getRepository('SmartSearchSearchBundle:Serie')->findOneBy(array('name' => $review->getNameSerie()));
 
-            $reviews[] = array($review, $serie);
+            $res[] = array($review, $serie);
 
         }
-
+        $reviews['res'] = $res;
+        $keyword = str_replace("+", " ", $keyword);
+        //$strictSerie = $em->getRepository('SmartSearchSearchBundle:Serie')->findOneBy(array('name' => $query[0]));
+        if ($this->isSerieEntity($keyword)!=false) {
+			$reviews['serie'] = $this->isSerieEntity($keyword);
+		} else
+			$reviews['serie'] = null;
+		//var_dump($reviews);die;
         return $reviews;
     }
 
@@ -288,13 +316,15 @@ class SearchController extends Controller
      * */
     public function generateGraphJsonFile(array $results, $keywordArray)
     {
-        if (sizeof($results) > 0) {
+        if (sizeof($results['res']) > 0) {
             $nodes = array();
             $nodes[] = array("name" => implode(" ",$keywordArray));
             $links = array();
             $j = 1;
-            for( $i =0; $i < sizeof($results); $i++ ) {
-                $nodes[] = array("name" => $results[$i][0]->getTitle());
+            //$results = array($results[0],$results[1]);
+            for( $i =0; $i < sizeof($results['res']); $i++ ) {
+                $nodes[] = array("name" => $results['res'][$i][0]->getTitle(),
+								"url" => $results['res'][$i][1]->getWebPath());
                 $links[] = array("source" => 0, "target" => $j++ );
             }
             $data = array("nodes" => $nodes, "links"=> $links);

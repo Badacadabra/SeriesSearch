@@ -30,7 +30,7 @@ class ReviewRepository extends EntityRepository
 	public function findDistinctDate()
 	{
 		return $this->getEntityManager()
-					->createQuery('SELECT DISTINCT r.dateCrawl FROM SmartSearchSearchBundle:Review r ORDER BY r.dateCrawl ASC')
+					->createQuery('SELECT DISTINCT r.dateCrawl FROM SmartSearchSearchBundle:Review r ORDER BY r.dateCrawl DESC')
 					->getResult();
 	}
 	/**
