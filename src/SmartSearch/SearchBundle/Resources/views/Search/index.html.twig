@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="/stylesheets/vegas.min.css">
         <link rel="stylesheet" href="/stylesheets/jquery.mCustomScrollbar.min.css">
         <link rel="stylesheet" href="/stylesheets/d3-tip.css">
+        <link rel="stylesheet" href="/stylesheets/timelinr.css">
     </head>
     <body itemscope itemtype="http://schema.org/WebPage">
         <audio autoplay loop>
@@ -36,7 +37,7 @@
             <area shape="circle" coords="95,122,11" title="Page de résultats" class="arrows serps-button buttons" />
             <area shape="circle" coords="147,175,12" title="Diagramme de force" class="arrows force-layout-button buttons" />
             <area shape="circle" coords="95,227,12" title="Frise chronologique" class="arrows timeline-button buttons" />
-            <area shape="circle" coords="44,176,12" title="Camembert" class="arrows pie-chart-button buttons" />
+            <area shape="circle" coords="44,176,12" title="Diagramme circulaire" class="arrows pie-chart-button buttons" />
             <area shape="circle" coords="34,242,10" title="Aide" class="help-button buttons" />
             <area shape="circle" coords="154,242,10" title="Infos sur le programme" class="info-button buttons" />
             <area shape="rect" coords="30,266,59,282" title="Ambiance précédente" id="previous" class="controls buttons" />
@@ -97,15 +98,15 @@
             <!-- SERPs -->
             <div id="serps">
                 {% if results is defined %}
-					{%if results.serie != null%}
-						<div id="specific-serie">
-							<p>
-								<b>{{results.serie.name}}</b> est une série de type <b>{{results.serie.genre}}</b> réalisé en {{results.serie.dateRelease}}<br>
-								Directeur : {{results.serie.director}}<br>
-								Personnages : {{results.serie.actors}}
-							</p>	
-						</div>
-					{%endif%}
+                    {%if results.serie != null%}
+                        <div id="specific-serie">
+                            <p>
+                                <b>{{results.serie.name}}</b> est une série de type <b>{{results.serie.genre}}</b> réalisé en {{results.serie.dateRelease}}<br>
+                                Directeur : {{results.serie.director}}<br>
+                                Personnages : {{results.serie.actors}}
+                            </p>
+                        </div>
+                    {%endif%}
                     {% if results.res|length > 0 %}
                         <div id="results">
                             <h1>TOP 10 sur l'expression "{{keyword}}"</h1>
@@ -126,18 +127,88 @@
                     {% endif %}
                 {% endif %}
             </div>
-            <!-- Visualisation -->
+            <!-- Diagramme de force -->
             <div id="force-layout" style="display:none;"></div>
-            <div id="timeline" style="display:none;"></div>
+            <!-- Frise chronologique -->
+            <div id="timeline" style="display:none;">
+                <div id="grad_top"></div>
+                <ul id="dates">
+                    <li><a href="#1900">1900</a></li>
+                    <li><a href="#1930">1930</a></li>
+                    <li><a href="#1944">1944</a></li>
+                    <li><a href="#1950">1950</a></li>
+                    <li><a href="#1971">1971</a></li>
+                    <li><a href="#1977">1977</a></li>
+                    <li><a href="#1989">1989</a></li>
+                    <li><a href="#1999">1999</a></li>
+                    <li><a href="#2001">2001</a></li>
+                    <li><a href="#2011">2011</a></li>
+                </ul>
+                <ul id="issues">
+                    <li id="1900">
+                        <img src="/images/timeline/1.jpg" alt="">
+                        <h2>Titre de la critique</h2>
+                        <p>Description de la série</p>
+                    </li>
+                    <li id="1930">
+                        <img src="/images/timeline/2.jpg" alt="">
+                        <h2>Titre de la critique</h2>
+                        <p>Description de la série</p>
+                    </li>
+                    <li id="1944">
+                        <img src="/images/timeline/3.jpg" alt="">
+                        <h2>Titre de la critique</h2>
+                        <p>Description de la série</p>
+                    </li>
+                    <li id="1950">
+                        <img src="/images/timeline/4.jpg" alt="">
+                        <h2>Titre de la critique</h2>
+                        <p>Description de la série</p>
+                    </li>
+                    <li id="1971">
+                        <img src="/images/timeline/5.jpg" alt="">
+                        <h2>Titre de la critique</h2>
+                        <p>Description de la série</p>
+                    </li>
+                    <li id="1977">
+                        <img src="/images/timeline/6.jpg" alt="">
+                        <h2>Titre de la critique</h2>
+                        <p>Description de la série</p>
+                    </li>
+                    <li id="1989">
+                        <img src="/images/timeline/7.jpg" alt="">
+                        <h2>Titre de la critique</h2>
+                        <p>Description de la série</p>
+                    </li>
+                    <li id="1999">
+                        <img src="/images/timeline/8.jpg" alt="">
+                        <h2>Titre de la critique</h2>
+                        <p>Description de la série</p>
+                    </li>
+                    <li id="2001">
+                        <img src="/images/timeline/9.jpg" alt="">
+                        <h2>Titre de la critique</h2>
+                        <p>Description de la série</p>
+                    </li>
+                    <li id="2011">
+                        <img src="/images/timeline/10.jpg" alt="">
+                        <h2>Titre de la critique</h2>
+                        <p>Description de la série</p>
+                    </li>
+                </ul>
+                <div id="prev-date"></div>
+                <div id="next-date"></div>
+            </div>
+            <!-- Diagramme circulaire -->
             <div id="pie-chart" style="display:none;"></div>
             <!-- Menu -->
             <div id="menu" style="display:none;">
                 <div>
                     <button class="ui fluid gray button search-engine-button">Moteur de recherche</button>
-                    <button class="ui fluid gray button top-arrow">Visualisation</button>
-                    <button class="ui fluid gray button right-arrow">Visualisation</button>
-                    <button class="ui fluid gray button bottom-arrow">Visualisation</button>
-                    <button class="ui fluid gray button left-arrow">Visualisation</button>
+                    <button class="ui fluid gray button serps-button">Page de résulats</button>
+                    <button class="ui fluid gray button force-layout">Diagramme de force</button>
+                    <button class="ui fluid gray button timeline-button">Frise chronologique</button>
+                    <button class="ui fluid gray button pie-chart-button">Diagramme circulaire</button>
                     <button class="ui fluid gray button help-button">Aide</button>
                     <button class="ui fluid gray button info-button">Infos</button>
                 </div>
@@ -234,6 +305,7 @@
         <script src="/javascripts/d3.min.js"></script>
         <script src="/javascripts/d3.tip.js"></script>
         <script src="/javascripts/loadGraph.js"></script>
+        <script src="/javascripts/jquery.timelinr-0.9.54.js"></script>
         <script src="/javascripts/d3pie.min.js"></script>
         <script src="/javascripts/loadPieChart.js"></script>
         <script src="/javascripts/gui.js"></script>

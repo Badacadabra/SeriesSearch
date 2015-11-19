@@ -32,32 +32,55 @@ $( document ).ready(function() {
     // Drag & drop sur la télécommande
     $( "#remote-wrapper" ).draggable({ containment: "parent", scroll: false });
 
+    // Activation de la timeline
+    $().timelinr({
+        prevButton: '#prev-date',
+        nextButton: '#next-date'
+    });
+
     // Gestion des clics sur les boutons simples
     var intermission = null;
 
+    function playIntermission() {
+        if(intermission == null) {
+            intermission = new Audio('/sounds/intermission.ogg');
+            intermission.play();
+        }
+    }
+
     $( "#on-off" ).click(function() {
         $( "#screen" ).fadeToggle();
-        if (intermission != null)
+        if ($( "#intermission" ).is(":visible")) {
+            $( "#intermission" ).fadeToggle();
+        }
+        if (intermission != null) {
             intermission.pause();
+            intermission = null;
+        }
         var onOff = new Audio("/sounds/tv-on-off.ogg");
         onOff.play();
     });
 
     $( ".config" ).click(function() {
         $( "#intermission" ).show();
-        intermission = new Audio("/sounds/intermission.ogg");
-        intermission.play();
+        playIntermission();
     });
 
     $( "#tv-config" ).click(function() {
         $( "#intermission" ).hide();
-        if (intermission != null)
+        if (intermission != null) {
             intermission.pause();
+            intermission = null;
+        }
     });
 
     $( "#mute" ).click(function() {
         var audio = $( "audio" );
         audio[0].pause();
+    });
+
+    $( "#reload" ).click(function() {
+        location.reload();
     });
 
     // Gestion dynamique de l'affichage dans l'écran
@@ -83,8 +106,13 @@ $( document ).ready(function() {
         });
     }
 
-    $( "#reload" ).click(function() {
-        location.reload();
+    // Gestion plus fine de la visualisation
+    $( ".force-layout-button" ).click(function() {
+        loadGraph();
+    });
+
+    $( ".pie-chart-button" ).click(function() {
+        loadPieChart();
     });
 
     // Gestion des ambiances
@@ -181,7 +209,7 @@ $( document ).ready(function() {
 
     // Gestion des SERPs
     if ( $( "#results" ).length ) {
-        //$( "#search-engine" ).hide();
+        // $( "#search-engine" ).hide();
     }
 
 });

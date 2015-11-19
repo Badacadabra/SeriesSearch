@@ -1,66 +1,70 @@
-// Initialisation d'un graphe de force
-var force = d3.layout.force()
-    .charge(-2000)
-    .gravity(0.1)
-    .linkDistance(150)
-    .size([750, 470]);
+function loadGraph() {
 
-var tip = d3.tip()
-    .attr('class', 'd3-tip')
-    .html(function(d) { return "<span>" + d.name + "</span>"; });
+    // Initialisation d'un graphe de force
+    var force = d3.layout.force()
+        .charge(-2000)
+        .gravity(0.1)
+        .linkDistance(150)
+        .size([750, 470]);
 
-// Création du canevas et création du graphe à partir des données
-var svg = d3.select("#force-layout")
-    .append("svg")
-    .attr("width", 750)
-    .attr("height", 470)
-    .call(tip);
+    var tip = d3.tip()
+        .attr('class', 'd3-tip')
+        .html(function(d) { return "<span>" + d.name + "</span>"; });
 
-d3.json("/tmp/search_result.json", function(error, graph) {
+    // Création du canevas et création du graphe à partir des données
+    var svg = d3.select("#force-layout")
+        .append("svg")
+        .attr("width", 750)
+        .attr("height", 470)
+        .call(tip);
 
-    if (error) throw error;
+    d3.json("/tmp/search_result.json", function(error, graph) {
 
-    force
-        .nodes(graph.nodes)
-        .links(graph.links)
-        .start();
+        if (error) throw error;
 
-    var link = svg.selectAll(".link")
-        .data(graph.links)
-        .enter()
-        .append("line")
-        .attr("class", "link")
+        force
+            .nodes(graph.nodes)
+            .links(graph.links)
+            .start();
 
-    var gnodes = svg.selectAll("g.gnode")
-        .data(graph.nodes)
-        .enter()
-        .append("g")
-        .classed("gnode", true)
+        var link = svg.selectAll(".link")
+            .data(graph.links)
+            .enter()
+            .append("line")
+            .attr("class", "link")
 
-    var node = gnodes.append("rect")
-        .attr("class", "node")
-        .attr("width", 50)
-        .attr("height", 50)
-        .attr("x", -25)
-        .attr("y", -25)
-        .style("fill", "silver")
-        .on('mouseover', tip.show)
-        .on('mouseout', tip.hide)
-        .call(force.drag);
+        var gnodes = svg.selectAll("g.gnode")
+            .data(graph.nodes)
+            .enter()
+            .append("g")
+            .classed("gnode", true)
 
-    // On enlève l'écouteur d'événement (clic) sur le premier nœud (central)
-    d3.select('.node').on('click', null);
+        var node = gnodes.append("image")
+            .attr("class", "node")
+            .attr("xlink:href", function(d) { return d.url })
+            .attr("width", 87)
+            .attr("height", 150)
+            .attr("x", -50)
+            .attr("y", -50)
+            .on('mouseover', tip.show)
+            .on('mouseout', tip.hide)
+            .call(force.drag);
 
-    force.on("tick", function() {
-        link.attr("x1", function(d) { return d.source.x; })
-            .attr("y1", function(d) { return d.source.y; })
-            .attr("x2", function(d) { return d.target.x; })
-            .attr("y2", function(d) { return d.target.y; });
+        // On enlève l'écouteur d'événement (clic) sur le premier nœud (central)
+        d3.select('.node').on('click', null);
 
-        gnodes.attr("transform", function(d) {
-            return 'translate(' + [d.x, d.y] + ')';
+        force.on("tick", function() {
+            link.attr("x1", function(d) { return d.source.x; })
+                .attr("y1", function(d) { return d.source.y; })
+                .attr("x2", function(d) { return d.target.x; })
+                .attr("y2", function(d) { return d.target.y; });
+
+            gnodes.attr("transform", function(d) {
+                return 'translate(' + [d.x, d.y] + ')';
+            });
         });
+
     });
 
-});
+}
 

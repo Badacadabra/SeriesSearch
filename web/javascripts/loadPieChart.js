@@ -1,6 +1,5 @@
-$( document ).ready(function() {
+function loadPieChart() {
 
-    // Construction de l'anneau
     var pie = new d3pie("pie-chart", {
         "header": {
             "title": {
@@ -141,4 +140,4 @@ $( document ).ready(function() {
         }
     });
 
-});
+}

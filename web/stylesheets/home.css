@@ -60,6 +60,10 @@ div#screen {
     overflow: auto;
 }
 
+div#screen div#search-engine {
+    height: 470px;
+}
+
 div#screen div#search-engine div#logo {
     display: flex;
     justify-content: center;
@@ -194,8 +198,8 @@ div#mCSB_1_container {
 }
 
 .link {
-    stroke: #1B1C1D;
-    stroke-width: 4px;
+    stroke: silver;
+    stroke-width: 7px;
 }
 
 g:first-of-type > .node {
