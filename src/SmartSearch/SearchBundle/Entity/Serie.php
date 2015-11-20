@@ -274,7 +274,7 @@ class Serie
 
     public function getUploadDir()
     {
-        return 'docs/series';
+        return '/docs/series';
     }
 
     public function getWebPath()
