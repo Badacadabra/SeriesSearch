@@ -108,8 +108,16 @@ div#screen div#search-engine div#from-to input {
     padding: 11px 0 !important;
 }
 
+div#screen div#serps {
+    border-top: solid 3px black;
+}
+
 div#screen div#serps div#results {
     margin: 15px;
+}
+
+div#screen div#serps div#results p {
+    font-size: large;
 }
 
 div#screen div#serps div#results div.result {
@@ -122,7 +130,7 @@ div#screen div#serps div#results div.result div.image img {
 }
 
 div#screen div#serps div#results div.result div.description h2 {
-    font-size: large;
+    font-size: x-large;
     margin-bottom: 15px !important;
 }
 

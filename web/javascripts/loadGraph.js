@@ -48,6 +48,7 @@ function loadGraph() {
             .attr("y", -50)
             .on('mouseover', tip.show)
             .on('mouseout', tip.hide)
+            .on('click', function(d) { console.log("Élément cliqué !") })
             .call(force.drag);
 
         // On enlève l'écouteur d'événement (clic) sur le premier nœud (central)

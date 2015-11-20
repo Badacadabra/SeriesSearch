@@ -28,27 +28,27 @@
         <map name="buttons">
             <area shape="circle" coords="156,39,12" title="Allumer/Éteindre la TV" id="on-off" class="buttons" />
             <area shape="rect" coords="30,66,59,84" title="Source indisponible" class="config buttons" />
-            <area shape="rect" coords="62,67,93,84" title="Source indisponible" class="config buttons" />
-            <area shape="rect" coords="97,66,130,83" title="Source principale" id="tv-config" class="buttons" />
-            <area shape="rect" coords="134,66,161,83" title="Source indisponible" class="config buttons" />
-            <area shape="circle" coords="34,108,11" title="Menu" class="menu-button buttons" />
+            <area shape="rect" coords="62,66,93,84" title="Source indisponible" class="config buttons" />
+            <area shape="rect" coords="97,66,130,84" title="Source principale" id="tv-config" class="buttons" />
+            <area shape="rect" coords="134,66,161,84" title="Source indisponible" class="config buttons" />
+            <area shape="circle" coords="34,108,10" title="Menu" class="menu-button buttons screen-content" />
             <area shape="circle" coords="154,108,10" title="Source indisponible" class="config buttons" />
-            <area shape="circle" coords="94,174,38" title="Moteur de recherche" class="search-engine-button buttons" />
-            <area shape="circle" coords="95,122,11" title="Page de résultats" class="arrows serps-button buttons" />
-            <area shape="circle" coords="147,175,12" title="Diagramme de force" class="arrows force-layout-button buttons" />
-            <area shape="circle" coords="95,227,12" title="Frise chronologique" class="arrows timeline-button buttons" />
-            <area shape="circle" coords="44,176,12" title="Diagramme circulaire" class="arrows pie-chart-button buttons" />
-            <area shape="circle" coords="34,242,10" title="Aide" class="help-button buttons" />
-            <area shape="circle" coords="154,242,10" title="Infos sur le programme" class="info-button buttons" />
-            <area shape="rect" coords="30,266,59,282" title="Ambiance précédente" id="previous" class="controls buttons" />
+            <area shape="circle" coords="95,175,38" title="Moteur de recherche" class="search-engine-button buttons screen-content" />
+            <area shape="circle" coords="95,122,12" title="Page de résultats" class="arrows serps-button buttons screen-content" />
+            <area shape="circle" coords="147,175,12" title="Diagramme de force" class="arrows force-layout-button buttons screen-content" />
+            <area shape="circle" coords="95,227,12" title="Frise chronologique" class="arrows timeline-button buttons screen-content" />
+            <area shape="circle" coords="44,176,12" title="Diagramme circulaire" class="arrows pie-chart-button buttons screen-content" />
+            <area shape="circle" coords="34,242,10" title="Aide" class="help-button buttons screen-content" />
+            <area shape="circle" coords="154,242,10" title="Infos sur le programme" class="info-button buttons screen-content" />
+            <area shape="rect" coords="30,267,59,282" title="Ambiance précédente" id="previous" class="controls buttons" />
             <area shape="rect" coords="62,267,92,282" title="Lancer le diaporama" id="play" class="controls buttons" />
             <area shape="rect" coords="98,267,128,282" title="Arrêter le diaporama" id="pause" class="controls buttons" />
-            <area shape="rect" coords="131,266,160,283" title="Ambiance suivante" id="next" class="controls buttons" />
-            <area shape="circle" coords="45,315,14" title="Ambiance « comme à la maison »" class="home buttons" />
-            <area shape="circle" coords="94,315,14" title="Ambiance sci-fi" class="sci-fi buttons" />
-            <area shape="circle" coords="144,314,14" title="Ambiance de guerre" class="war buttons" />
-            <area shape="circle" coords="46,356,14" title="Ambiance épouvante/horreur" class="horror buttons" />
-            <area shape="circle" coords="95,356,14" title="Ambiance « road trip »" class="road buttons" />
+            <area shape="rect" coords="131,267,160,282" title="Ambiance suivante" id="next" class="controls buttons" />
+            <area shape="circle" coords="45,315,15" title="Ambiance « comme à la maison »" class="home buttons" />
+            <area shape="circle" coords="94,315,15" title="Ambiance sci-fi" class="sci-fi buttons" />
+            <area shape="circle" coords="144,314,15" title="Ambiance de guerre" class="war buttons" />
+            <area shape="circle" coords="46,356,15" title="Ambiance épouvante/horreur" class="horror buttons" />
+            <area shape="circle" coords="95,356,15" title="Ambiance « road trip »" class="road buttons" />
             <area shape="circle" coords="145,357,15" title="Ambiance historique" class="history buttons" />
             <area shape="circle" coords="45,397,15" title="Ambiance urbaine" class="urban buttons" />
             <area shape="circle" coords="95,397,15" title="Ambiance fantastique" class="fantasy buttons" />
@@ -68,7 +68,7 @@
                     {{ form_errors(form) }}
                     <div class="ui fluid massive icon input">
                         {{ form_errors(form.keyword) }}
-                        {{ form_widget(form.keyword, { 'value' : keyword, 'attr': { 'placeholder': "Une série vous tente ?", 'autofocus': "autofocus" } }) }}
+                        {{ form_widget(form.keyword, { 'value' : keyword, 'attr': { 'placeholder': "Une série vous tente ?", 'autofocus': "autofocus", 'autocomplete': "off" } }) }}
                         <i class="search icon"></i>
                     </div>
                     <div id="crawlSelection" class="ui container">
@@ -114,12 +114,15 @@
                             {% for critique in results.res %}
                                 <div class="result">
                                     <div class="image">
-                                        <img src="{{ asset(critique[1].getWebPath()) }}" />
+                                        <a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}">
+                                            <img src="{{ asset(critique[1].getWebPath()) }}">
+                                        </a>
                                     </div>
                                     <div class="description">
-                                        <h2>{{critique[0].title}}</h2>
+                                        <a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}">
+                                            <h2>{{critique[0].title}}</h2>
+                                        </a>
                                         <p>{{critique[0].content|truncate(200, true, '...')}}</p>
-                                        <p><a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}">Voir la page</a></p>
                                     </div>
                                 </div>
                             {% endfor %}
@@ -149,51 +152,61 @@
                         <img src="/images/timeline/1.jpg" alt="">
                         <h2>Titre de la critique</h2>
                         <p>Description de la série</p>
+                        <a href="">Voir la page</a>
                     </li>
                     <li id="1930">
                         <img src="/images/timeline/2.jpg" alt="">
                         <h2>Titre de la critique</h2>
                         <p>Description de la série</p>
+                        <a href="">Voir la page</a>
                     </li>
                     <li id="1944">
                         <img src="/images/timeline/3.jpg" alt="">
                         <h2>Titre de la critique</h2>
                         <p>Description de la série</p>
+                        <a href="">Voir la page</a>
                     </li>
                     <li id="1950">
                         <img src="/images/timeline/4.jpg" alt="">
                         <h2>Titre de la critique</h2>
                         <p>Description de la série</p>
+                        <a href="">Voir la page</a>
                     </li>
                     <li id="1971">
                         <img src="/images/timeline/5.jpg" alt="">
                         <h2>Titre de la critique</h2>
                         <p>Description de la série</p>
+                        <a href="">Voir la page</a>
                     </li>
                     <li id="1977">
                         <img src="/images/timeline/6.jpg" alt="">
                         <h2>Titre de la critique</h2>
                         <p>Description de la série</p>
+                        <a href="">Voir la page</a>
                     </li>
                     <li id="1989">
                         <img src="/images/timeline/7.jpg" alt="">
                         <h2>Titre de la critique</h2>
                         <p>Description de la série</p>
+                        <a href="">Voir la page</a>
                     </li>
                     <li id="1999">
                         <img src="/images/timeline/8.jpg" alt="">
                         <h2>Titre de la critique</h2>
                         <p>Description de la série</p>
+                        <a href="">Voir la page</a>
                     </li>
                     <li id="2001">
                         <img src="/images/timeline/9.jpg" alt="">
                         <h2>Titre de la critique</h2>
                         <p>Description de la série</p>
+                        <a href="">Voir la page</a>
                     </li>
                     <li id="2011">
                         <img src="/images/timeline/10.jpg" alt="">
                         <h2>Titre de la critique</h2>
                         <p>Description de la série</p>
+                        <a href="">Voir la page</a>
                     </li>
                 </ul>
                 <div id="prev-date"></div>
@@ -206,7 +219,7 @@
                 <div>
                     <button class="ui fluid gray button search-engine-button">Moteur de recherche</button>
                     <button class="ui fluid gray button serps-button">Page de résulats</button>
-                    <button class="ui fluid gray button force-layout">Diagramme de force</button>
+                    <button class="ui fluid gray button force-layout-button">Diagramme de force</button>
                     <button class="ui fluid gray button timeline-button">Frise chronologique</button>
                     <button class="ui fluid gray button pie-chart-button">Diagramme circulaire</button>
                     <button class="ui fluid gray button help-button">Aide</button>

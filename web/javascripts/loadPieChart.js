@@ -3,12 +3,12 @@ function loadPieChart() {
     var pie = new d3pie("pie-chart", {
         "header": {
             "title": {
-                "text": "Séries",
+                "text": "Genres",
                 "fontSize": 35,
                 "font": "courier"
             },
             "subtitle": {
-                "text": "Lorem ipsum ? *",
+                "text": "Répartition *",
                 "color": "#999999",
                 "fontSize": 15,
                 "font": "courier"
@@ -17,7 +17,7 @@ function loadPieChart() {
             "titleSubtitlePadding": 10
         },
         "footer": {
-            "text": "* Lorem ipsum dolor sit amet",
+            "text": "* Déterminée à partir des résultats renvoyés pour la dernière requête",
             "color": "#999999",
             "fontSize": 15,
             "font": "courier",
@@ -26,7 +26,7 @@ function loadPieChart() {
         "size": {
             "canvasHeight": 470,
             "canvasWidth": 750,
-            "pieInnerRadius": "73%",
+            "pieInnerRadius": "60%",
             "pieOuterRadius": "80%"
         },
         "data": {
@@ -81,16 +81,6 @@ function loadPieChart() {
                     "label": "Tutuu",
                     "value": 1,
                     "color": "#0b6197"
-                },
-                {
-                    "label": "Tetee",
-                    "value": 2,
-                    "color": "#7c9058"
-                },
-                {
-                    "label": "Tytyy",
-                    "value": 11,
-                    "color": "#207f32"
                 }
             ]
         },

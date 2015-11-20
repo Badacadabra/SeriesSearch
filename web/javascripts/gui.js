@@ -108,11 +108,15 @@ $( document ).ready(function() {
 
     // Gestion plus fine de la visualisation
     $( ".force-layout-button" ).click(function() {
-        loadGraph();
+        if ($( "#force-layout" ).is( ":empty" )) {
+            loadGraph();
+        }
     });
 
     $( ".pie-chart-button" ).click(function() {
-        loadPieChart();
+        if ($( "#pie-chart" ).is( ":empty" )) {
+            loadPieChart();
+        }
     });
 
     // Gestion des ambiances
@@ -207,10 +211,24 @@ $( document ).ready(function() {
         $('.dropdown').dropdown('set value', $.trim(selectedItem));
     });
 
-    // Gestion des SERPs
-    if ( $( "#results" ).length ) {
-        // $( "#search-engine" ).hide();
-    }
+    // Gestion de la scrollbar
+    $( ".screen-content:not(.serps-button)" ).click(function() {
+        $( "#screen" ).mCustomScrollbar( "disable", true );
+    });
+
+    $( ".serps-button" ).click(function() {
+        $( "#screen" ).mCustomScrollbar( "update" );
+    });
+
+    $( "#screen" ).mCustomScrollbar({
+        callbacks: {
+            onUpdate:function() {
+                if ( $( "#results" ).length ) {
+                    $( "#screen" ).mCustomScrollbar( "scrollTo", "#serps");
+                }
+            }
+        }
+    });
 
 });
 
