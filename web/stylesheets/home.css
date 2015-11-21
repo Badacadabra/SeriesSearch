@@ -38,6 +38,20 @@ div#remote-wrapper {
     z-index: 2;
 }
 
+@media screen and (max-width: 1700px) {
+    div#remote-wrapper {
+        left: 130px;
+    }
+}
+
+@media screen and (max-width: 1440px) {
+    div#remote-wrapper {
+        top: initial;
+        left: 0;
+        bottom: 0;
+    }
+}
+
 div#remote-wrapper:hover {
     cursor: move !important;
 }
@@ -106,6 +120,7 @@ div#screen div#search-engine div#from-to {
 
 div#screen div#search-engine div#from-to input {
     padding: 11px 0 !important;
+    width: 130px !important;
 }
 
 div#screen div#serps {
@@ -132,6 +147,18 @@ div#screen div#serps div#results div.result div.image img {
 div#screen div#serps div#results div.result div.description h2 {
     font-size: x-large;
     margin-bottom: 15px !important;
+}
+
+div#screen div#specific-series {
+    padding: 30px;
+}
+
+div#screen div#specific-series p {
+    background-color: #cacbcd;
+    border: 1px solid #363737;
+    color: #363737;
+    font-size: large;
+    padding: 10px;
 }
 
 div#screen div#menu, div#screen div#help {
@@ -185,7 +212,7 @@ div#screen div#info .cards .card {
 }
 
 .vegas-timer-progress {
-    background: #81DF38 none repeat scroll 0 0 !important;
+    background: silver none repeat scroll 0 0 !important;
 }
 
 div#mCSB_1_container {
