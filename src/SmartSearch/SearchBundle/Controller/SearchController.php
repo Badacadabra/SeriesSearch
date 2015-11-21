@@ -22,7 +22,8 @@ class SearchController extends Controller
         $datesCrawl = $reviewRepository->findDistinctDate();
         $defaultDateCrawl = "2015-11-13";
         $keyword='';
-
+		
+		//var_dump($datesCrawl);die;
         $form = $this->createFormBuilder()
             ->add('keyword', 'text', array('required'=>false))
             ->getForm();
@@ -80,6 +81,7 @@ class SearchController extends Controller
            $results = $this->displayResults($keywordArray, $dateCrawl, $keyword);
         }
         $keyword = str_replace("+", " ", $keyword);
+        //var_dump($results);die;
 		$this->generateGraphJsonFile($results,$keywordArray);
         return $this->render('SmartSearchSearchBundle:Search:index.html.twig', 
 								array(
@@ -342,6 +344,7 @@ class SearchController extends Controller
         $reviewRepository = $this->getDoctrine()->getRepository('SmartSearchSearchBundle:Review');
         $reviews = $reviewRepository->findByCustomDate($customQueryFromSide,$customQueryToSide);
         $data = array();
+        $res = array();
         if (sizeof($reviews) > 0) {
             foreach ($reviews as $review) {
                 $serie = $this->getDoctrine()
@@ -350,6 +353,8 @@ class SearchController extends Controller
                 $data[] = array($review, $serie);
             }
         }
-        return $data;
+        $res['res'] = $data;
+        $res['serie'] = null;
+        return $res;
     }
 }
