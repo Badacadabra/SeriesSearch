@@ -32,6 +32,22 @@ $( document ).ready(function() {
     // Drag & drop sur la télécommande
     $( "#remote-wrapper" ).draggable({ containment: "parent", scroll: false });
 
+    // Validation du formulaire de recherche
+    $( "form" ).submit(function(e) {
+        if ($( "#form_keyword" ).val() == "") {
+            e.preventDefault();
+            $( "#search" ).addClass( "error" );
+            $( "#form_keyword" ).attr( "placeholder", "Veuillez entrer une requête." );
+        }
+    });
+
+    $( "#form_keyword" ).keyup(function() {
+        if ($( this ).val() != "") {
+            $( "#search" ).removeClass( "error" );
+            $( "#form_keyword" ).attr( "placeholder", "Une série vous tente ?" );
+        }
+    });
+
     // Activation de la timeline
     $().timelinr({
         prevButton: '#prev-date',
@@ -77,10 +93,15 @@ $( document ).ready(function() {
     $( "#mute" ).click(function() {
         var audio = $( "audio" );
         audio[0].pause();
+        audio.removeAttr( "autoplay" );
+        Cookies.set( "soundState", "off", { expires: 1 } );
     });
 
-    $( "#reload" ).click(function() {
-        location.reload();
+    $( "#sound" ).click(function() {
+        var audio = $( "audio" );
+        audio.attr( "autoplay", "autoplay" );
+        audio[0].play();
+        Cookies.set( "soundState", "on", { expires: 1 } );
     });
 
     // Gestion dynamique de l'affichage dans l'écran
@@ -123,6 +144,7 @@ $( document ).ready(function() {
     $( "body" ).vegas({
         delay: 20000,
         transition: 'zoomOut',
+        slide: Cookies.get( "indexAmbiance" ),
         slides: [
             { src: "/images/home.jpg" },
             { src: "/images/science-fiction.jpg" },
@@ -139,42 +161,17 @@ $( document ).ready(function() {
         walk: function (index, slideSettings) {
             // console.log("Slide index " + index + " image " + slideSettings.src);
             var audio = $( "audio" );
-            switch(index) {
-                case 0:
-                    sound = "home";
-                    break;
-                case 1:
-                    sound = "sci-fi";
-                    break;
-                case 2:
-                    sound = "war";
-                    break;
-                case 3:
-                    sound = "horror";
-                    break;
-                case 4:
-                    sound = "road";
-                    break;
-                case 5:
-                    sound = "history";
-                    break;
-                case 6:
-                    sound = "urban";
-                    break;
-                case 7:
-                    sound = "fantasy";
-                    break;
-                case 8:
-                    sound = "prison";
-                    break;
-                case 9:
-                    sound = "romance";
-                    break;
-            }
 
-            $( "audio source" ).attr( "src", "/sounds/" + sound + ".ogg");
+            $( "audio source" ).attr( "src", "/sounds/" + index + ".ogg");
             audio[0].pause();
             audio[0].load();
+
+            Cookies.set( "indexAmbiance", index, { expires: 1 } );
+
+            if (Cookies.get( "soundState" ) == "on") {
+                audio.attr( "autoplay", "autoplay" );
+                audio[0].play();
+            }
 
         }
     });
@@ -223,7 +220,7 @@ $( document ).ready(function() {
     $( "#screen" ).mCustomScrollbar({
         callbacks: {
             onUpdate:function() {
-                if ( $( "#results" ).length ) {
+                if ( $( "#results" ).length || $( "#specific-series" ).length) {
                     $( "#screen" ).mCustomScrollbar( "scrollTo", "#serps");
                 }
             }

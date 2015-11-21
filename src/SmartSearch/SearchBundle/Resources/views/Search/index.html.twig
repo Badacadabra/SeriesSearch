@@ -17,9 +17,9 @@
         <link rel="stylesheet" href="/stylesheets/timelinr.css">
     </head>
     <body itemscope itemtype="http://schema.org/WebPage">
-        <audio autoplay loop>
+        <audio loop>
             Votre navigateur ne supporte pas l'élément <code>audio</code>.
-            <source src="/sounds/home.ogg" type="audio/ogg">
+            <source src="" type="audio/ogg">
         </audio>
         <img id="tv" src="/images/tv.png" alt="TV">
         <div id="remote-wrapper">
@@ -55,7 +55,7 @@
             <area shape="circle" coords="145,398,15" title="Ambiance carcérale" class="prison buttons" />
             <area shape="circle" coords="45,439,15" title="Couper le son" id="mute" class="buttons" />
             <area shape="circle" coords="95,439,15" title="Ambiance romantique" class="romance buttons" />
-            <area shape="circle" coords="145,439,15" title="Recharger la page" id="reload" class="buttons" />
+            <area shape="circle" coords="145,439,15" title="Activer le son" id="sound" class="buttons" />
         </map>
         <div id="screen" class="mCustomScrollbar" data-mcs-theme="dark">
             <!-- Moteur de recherche -->
@@ -66,7 +66,7 @@
                 </div>
                 {{ form_start(form) }}
                     {{ form_errors(form) }}
-                    <div class="ui fluid massive icon input">
+                    <div id="search" class="ui fluid massive icon input">
                         {{ form_errors(form.keyword) }}
                         {{ form_widget(form.keyword, { 'value' : keyword, 'attr': { 'placeholder': "Une série vous tente ?", 'autofocus': "autofocus", 'autocomplete': "off" } }) }}
                         <i class="search icon"></i>
@@ -91,19 +91,18 @@
                     </div>
                 {{ form_end(form) }}
                 <div id="from-to">
-                    <input id="from" type="text" class="ui blue button" value="Date de début">
-                    <input id="to" type="text" class="ui blue button" value="Date de fin">
+                    <input id="from" type="text" class="ui blue button" value="Départ">
+                    <input id="to" type="text" class="ui blue button" value="Arrivée">
                 </div>
             </div>
             <!-- SERPs -->
             <div id="serps">
                 {% if results is defined %}
                     {%if results.serie != null%}
-                        <div id="specific-serie">
+                        <div id="specific-series">
                             <p>
-                                <b>{{results.serie.name}}</b> est une série de type <b>{{results.serie.genre}}</b> réalisé en {{results.serie.dateRelease}}<br>
-                                Directeur : {{results.serie.director}}<br>
-                                Personnages : {{results.serie.actors}}
+                                <b>{{results.serie.name}}</b> est une série de type <i>{{results.serie.genre}}</i> réalisée par <i>{{results.serie.director}}</i> en <i>{{results.serie.dateRelease}}</i><br><br>
+                                <u>Acteurs</u> : {{results.serie.actors}}
                             </p>
                         </div>
                     {%endif%}
@@ -321,6 +320,7 @@
         <script src="/javascripts/jquery.timelinr-0.9.54.js"></script>
         <script src="/javascripts/d3pie.min.js"></script>
         <script src="/javascripts/loadPieChart.js"></script>
+        <script src="/javascripts/js.cookie.js"></script>
         <script src="/javascripts/gui.js"></script>
     </body>
 </html>
