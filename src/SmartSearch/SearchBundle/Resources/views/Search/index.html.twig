@@ -135,78 +135,27 @@
             <div id="timeline" style="display:none;">
                 <div id="grad_top"></div>
                 <ul id="dates">
-                    <li><a href="#1900">1900</a></li>
-                    <li><a href="#1930">1930</a></li>
-                    <li><a href="#1944">1944</a></li>
-                    <li><a href="#1950">1950</a></li>
-                    <li><a href="#1971">1971</a></li>
-                    <li><a href="#1977">1977</a></li>
-                    <li><a href="#1989">1989</a></li>
-                    <li><a href="#1999">1999</a></li>
-                    <li><a href="#2001">2001</a></li>
-                    <li><a href="#2011">2011</a></li>
+				{% if results is defined %}
+					 {% if results.res|length > 0 %}
+						{% for critique in results.res %}
+							<li><a href="#{{critique[0].datePublished|date('Y')}}">{{critique[0].datePublished|date('Y')}}</a></li>
+						{%endfor%}
+					 {%endif%}
+				 {%endif%}
                 </ul>
                 <ul id="issues">
-                    <li id="1900">
-                        <img src="/images/timeline/1.jpg" alt="">
-                        <h2>Titre de la critique</h2>
-                        <p>Description de la série</p>
-                        <a href="">Voir la page</a>
-                    </li>
-                    <li id="1930">
-                        <img src="/images/timeline/2.jpg" alt="">
-                        <h2>Titre de la critique</h2>
-                        <p>Description de la série</p>
-                        <a href="">Voir la page</a>
-                    </li>
-                    <li id="1944">
-                        <img src="/images/timeline/3.jpg" alt="">
-                        <h2>Titre de la critique</h2>
-                        <p>Description de la série</p>
-                        <a href="">Voir la page</a>
-                    </li>
-                    <li id="1950">
-                        <img src="/images/timeline/4.jpg" alt="">
-                        <h2>Titre de la critique</h2>
-                        <p>Description de la série</p>
-                        <a href="">Voir la page</a>
-                    </li>
-                    <li id="1971">
-                        <img src="/images/timeline/5.jpg" alt="">
-                        <h2>Titre de la critique</h2>
-                        <p>Description de la série</p>
-                        <a href="">Voir la page</a>
-                    </li>
-                    <li id="1977">
-                        <img src="/images/timeline/6.jpg" alt="">
-                        <h2>Titre de la critique</h2>
-                        <p>Description de la série</p>
-                        <a href="">Voir la page</a>
-                    </li>
-                    <li id="1989">
-                        <img src="/images/timeline/7.jpg" alt="">
-                        <h2>Titre de la critique</h2>
-                        <p>Description de la série</p>
-                        <a href="">Voir la page</a>
-                    </li>
-                    <li id="1999">
-                        <img src="/images/timeline/8.jpg" alt="">
-                        <h2>Titre de la critique</h2>
-                        <p>Description de la série</p>
-                        <a href="">Voir la page</a>
-                    </li>
-                    <li id="2001">
-                        <img src="/images/timeline/9.jpg" alt="">
-                        <h2>Titre de la critique</h2>
-                        <p>Description de la série</p>
-                        <a href="">Voir la page</a>
-                    </li>
-                    <li id="2011">
-                        <img src="/images/timeline/10.jpg" alt="">
-                        <h2>Titre de la critique</h2>
-                        <p>Description de la série</p>
-                        <a href="">Voir la page</a>
-                    </li>
+				{% if results is defined %}
+					{% if results.res|length > 0 %}
+						{% for critique in results.res %}
+							<li id="{{critique[0].datePublished|date('Y')}}">
+								<img src="{{asset(critique[1].getWebPath())}}" alt="{{critique[1].name}}">
+								<h2>{{critique[0].title}}</h2>
+								<p>{{critique[0].content|truncate(200, true, '...')}}</p>
+								<a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}">Voir la page</a>
+							</li>
+						{%endfor%}
+					{%endif%}
+				{%endif%}
                 </ul>
                 <div id="prev-date"></div>
                 <div id="next-date"></div>

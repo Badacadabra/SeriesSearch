@@ -80,9 +80,10 @@ class SearchController extends Controller
         } else {
            $results = $this->displayResults($keywordArray, $dateCrawl, $keyword);
         }
+        //var_dump($results['res'][0]);die;
         $keyword = str_replace("+", " ", $keyword);
-        //var_dump($results);die;
-		$this->generateGraphJsonFile($results,$keywordArray);
+		$this->generateGraphJsonFile($results,$keywordArray); //Fichier json pour le graphe
+		$this->generatePieChartJsonFile($results); //Fichier json pour le camembert
         return $this->render('SmartSearchSearchBundle:Search:index.html.twig', 
 								array(
 									  "form" => $form->createView(), "results" => $results,
@@ -310,6 +311,35 @@ class SearchController extends Controller
     {
         return $this->render("SmartSearchSearchBundle:Search:result-graph.html.twig",array());
     }
+    /**
+     * Permet de créer le fichier json pour le diagramme camembert
+     * @param array $results : le résultat à partir du
+     * quel le fichier json sera créé
+     * */
+    public function generatePieChartJsonFile(array $results)
+    {
+		$colors = array("#2383c1","#64a61f","#7b6788","#a05c56","#961919",
+						   "#d8d239","#e98125","#d0743c","#6ada6a","#0b6197"
+						   );
+		$genders = array();
+		if (sizeof($results['res']) > 0) {
+			foreach($results['res'] as $critique) {
+				$genders[] = $critique[1]->getGenre();
+			}
+			$distinctGenders = array_count_values($genders);
+			if (sizeof($distinctGenders) > 0) {
+				$fileContent = json_decode(file_get_contents(__DIR__.'/../../../../web/tmp/pie_chart_data.json'));
+				$data = array();
+				$i = 0;
+				foreach($distinctGenders as $key => $val) {
+					$data[] = (object)array('label' => $key,'value' => $val, 'color' => $colors[$i]);
+					$i++;
+				}
+				$fileContent->data->content = $data;
+				file_put_contents(__DIR__.'/../../../../web/tmp/pie_chart_data.json',json_encode($fileContent));
+			}
+		}
+	}
     /**
      * Permet de créer le fichier json pour le graphe
      * @param array $results : le résultat à partir du

@@ -136,7 +136,9 @@ $( document ).ready(function() {
 
     $( ".pie-chart-button" ).click(function() {
         if ($( "#pie-chart" ).is( ":empty" )) {
-            loadPieChart();
+			$.getJSON("/tmp/pie_chart_data.json", function(data) {
+				loadPieChart(data);
+			})
         }
     });
 
