@@ -109,7 +109,7 @@
                     {% if results.res|length > 0 %}
                         <div id="results">
                             <h1>TOP 10 sur l'expression "{{keyword}}"</h1>
-                            <p>Résultats via le crawl du {{dateCrawl}}</p>
+                            <p>Résultats via le crawl du <span id="datecrawl">{{dateCrawl}}</span></p>
                             {% for critique in results.res %}
                                 <div class="result">
                                     <div class="image">
@@ -118,7 +118,7 @@
                                     <div class="description">
                                         <h2>{{critique[0].title}}</h2>
                                         <p>{{critique[0].content|truncate(200, true, '...')}}</p>
-                                        <p><a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}">Voir la page</a></p>
+                                        <p><a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}" class="display-review" id="{{critique[0].idReview}}">Voir la page</a></p>
                                     </div>
                                 </div>
                             {% endfor %}
@@ -237,5 +237,52 @@
         <script src="/javascripts/d3pie.min.js"></script>
         <script src="/javascripts/loadPieChart.js"></script>
         <script src="/javascripts/gui.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $( ".display-review" ).bind(
+                    {
+                        mouseenter: function(e) {
+                        },
+                        mouseleave: function(e) {
+                        },
+                        click: function(evt) {
+                            evt.stopPropagation();
+                            evt.preventDefault();
+
+                            var id_review = $(this).attr("id");
+                            var date_crawl = $("#datecrawl").text();
+                            var route = "{{ path('smart_search_review_display', {'id': '1111', 'dateCrawl': '0000' }) }}";
+                            route = route.replace("1111", id_review);
+                            route = route.replace("0000", date_crawl);
+
+                            $('body').prepend('<div id="overlay"></div>');
+                            $('body').prepend('<div id="message-box"></div>');
+                            $('#message-box').append('<a id="close-message-box"></a>');
+
+                            $.ajax({
+                                url : route,
+                                type : 'GET',
+                                dataType : 'html',
+                                beforeSend: function(){
+                                    console.log(route);
+                                    $('#message-box').append('<div id="preloader-message"><img src="/images/preloader.gif" alt="loading..." /></div>');
+                                },
+                                success : function(result, statut){ // code_html contient le HTML renvoyé
+                                    $('#preloader-message').remove();
+                                    $('#message-box').append(result);
+                               }
+                            });
+
+                            $('#close-message-box, #overlay').click(function(e){
+                                e.stopPropagation();
+                                e.preventDefault();
+                                $('#overlay').remove();
+                                $('#message-box').remove();
+                            });
+                        }
+                    }
+                );
+            });
+        </script>
     </body>
 </html>
