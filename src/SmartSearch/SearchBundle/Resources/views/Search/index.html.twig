@@ -101,7 +101,10 @@
                         <div id="specific-series" itemscope itemtype="https://schema.org/TVSeries">
                             <p>
                                 <span class="bold" itemprop="name">{{results.serie.name}}</span> est une série de type <span class="italic" itemprop="genre">{{results.serie.genre}}</span> réalisée par <span class="italic" itemprop="director">{{results.serie.director}}</span> en <span class="italic" itemprop="datePublished">{{results.serie.dateRelease}}</span><br><br>
-                                <span class="underline">Acteurs</span> : {{results.serie.actors}}
+                                <span class="underline">Acteurs</span> : 
+                                {% for actor in results.actors %}
+									<span>{{actor}}</span>
+								{%endfor%}
                             </p>
                         </div>
                     {%endif%}
@@ -138,8 +141,8 @@
                 <ul id="dates">
                 {% if results is defined %}
                      {% if results.res|length > 0 %}
-                        {% for critique in results.res %}
-                            <li><a href="#{{critique[0].datePublished|date('Y')}}">{{critique[0].datePublished|date('Y')}}</a></li>
+                        {% for reviewDate in results.sortedDates %}
+                            <li><a href="#{{reviewDate}}">{{reviewDate}}</a></li>
                         {%endfor%}
                      {%endif%}
                  {%endif%}
@@ -147,8 +150,8 @@
                 <ul id="issues">
                 {% if results is defined %}
                     {% if results.res|length > 0 %}
-                        {% for critique in results.res %}
-                            <li id="{{critique[0].datePublished|date('Y')}}">
+                        {% for key,critique in results.res %}
+                            <li id="{{results.sortedDates[key]}}">
                                 <img src="{{asset(critique[1].getWebPath())}}" alt="{{critique[1].name}}">
                                 <h2>{{critique[0].title}}</h2>
                                 <p>{{critique[0].content|truncate(200, true, '...')}}</p>

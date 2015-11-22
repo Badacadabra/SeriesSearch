@@ -218,32 +218,32 @@ class SearchController extends Controller
     private function displayResults($query, $dateCrawl, $keyword)
     {
         $em = $this->getDoctrine()->getManager();
-
         $results = $this->getResults($query, $dateCrawl);
-
         $reviews = array();
 		$res = array();
+		$sortedDates = array();
+		$actors = array();
         foreach($results as $idReview => $score) {
-
             $review = $em->getRepository('SmartSearchSearchBundle:Review')->find($idReview);
             $serie = $em->getRepository('SmartSearchSearchBundle:Serie')->findOneBy(array('name' => $review->getNameSerie()));
-
+			$sortedDates[] = $review->getDatePublished()->format("Y");
+			$actors[] = explode(';',$serie->getActors());
             $res[] = array($review, $serie);
-
         }
         $reviews['res'] = $res;
-        // var_dump($res);
+        sort($sortedDates);
+        $reviews['sortedDates'] = $sortedDates;
         $keyword = str_replace("+", " ", $keyword);
         //$strictSerie = $em->getRepository('SmartSearchSearchBundle:Serie')->findOneBy(array('name' => $query[0]));
         if ($this->isSerieEntity($keyword)!=false) {
-			$reviews['serie'] = $this->isSerieEntity($keyword);
+			$serie = $this->isSerieEntity($keyword);
+			$reviews['serie'] = $serie;
+			$reviews['actors'] = explode(';',$serie->getActors());
 		} else
 			$reviews['serie'] = null;
-		//var_dump($reviews);die;
+			
         return $reviews;
     }
-
-
     // ***********************************
     // Méthode pour nettoyer du contenu (suppression des virgules, des points et transformation du texte en minuscule)
     // ***********************************
@@ -278,21 +278,7 @@ class SearchController extends Controller
 
         return $str;
     }
-    /**
-     * Permet de renvoyer les dates de crawl
-     * */
-    private function getDates()
-    {
-        /*$em = $this->getDoctrine()->getManager();
-        $listDates = $em->getRepository('SmartSearchSearchBundle:Review')->findDistinctDate();
-        $dates = array();
-        foreach($listDates as $date) {
-            $formatedDate = $date['dateCrawl']->format('Y-m-d');
-            $dates[$formatedDate] = $formatedDate; //Pour avoir la date comme value dans les balises "option" de la select list.
-        }*/
-        $dates = array("2015-11-13" => "2015-11-13","2015-11-10" => "2015-11-10");
-        return $dates;
-    }
+   
     /**
      * Permet d'afficher site des critiques
      * @param int id : l'identifiant de la critique
@@ -379,10 +365,14 @@ class SearchController extends Controller
                               ->getRepository('SmartSearchSearchBundle:Serie')
                               ->findOneBy(array('name' => $review->getNameSerie()));
                 $data[] = array($review, $serie);
+                $sortedDates[] = $review->getDatePublished()->format("Y");
             }
         }
         $res['res'] = $data;
         $res['serie'] = null;
+        sort($sortedDates);
+        $res['sortedDates'] = $sortedDates;
+        
         return $res;
     }
 }
