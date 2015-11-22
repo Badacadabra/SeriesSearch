@@ -101,11 +101,11 @@ class SearchController extends Controller
         $em = $this->getDoctrine()->getManager();
         $date = new \DateTime($dateinput);
 
-        $reviews = $em->getRepository('SmartSearchSearchBundle:Review')->findBy(array("dateCrawl" => $date), array(), 900);
+        $reviews = $em->getRepository('SmartSearchSearchBundle:Review')->findBy(array("dateCrawl" => $date), array());
         $collection = array();
 
         foreach($reviews as $review) {
-            $txt = $this->cleanContent($review->getTitle()).$this->cleanContent($review->getContent());
+            $txt = $this->cleanContent($review->getTitle())." ".$this->cleanContent($review->getContent());
             $collection[$review->getId()] = $txt;
         }
 
@@ -137,7 +137,7 @@ class SearchController extends Controller
         $index = array('docCount' => $docCount, 'dictionary' => $dictionary);
 
         $indexJson = json_encode($index); // On encode les résultats en JSON
-        $fp = fopen(__DIR__.'/../../../../web/docs/index_'.$dateinput, 'w');
+        $fp = fopen(__DIR__.'/../../../../web/docs/index_'.$dateinput, 'w+');
         fwrite($fp, serialize($indexJson)); // On serialize les donnes pour gagner en rapidité et on les écrit dans le fichier index.json
         fclose($fp);
 
@@ -154,7 +154,6 @@ class SearchController extends Controller
 		$series = $this->getDoctrine()->getRepository("SmartSearchSearchBundle:Serie")->findAll();
 		foreach($series as $serie) {
 			if (strtolower($serie->getName()) == $query) {
-				//var_dump($serie);die;
 				return $serie;
 			}
 		}
@@ -176,6 +175,7 @@ class SearchController extends Controller
     // ***********************************
     private function getResults($query, $dateCrawl)
     {
+        //var_dump($dateCrawl);
         // $index = $this->createIndex($dateCrawl);
         $index = $this->getIndex($dateCrawl);
         // var_dump($index);
@@ -220,6 +220,7 @@ class SearchController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $results = $this->getResults($query, $dateCrawl);
+
         $reviews = array();
 		$res = array();
         foreach($results as $idReview => $score) {
@@ -231,6 +232,7 @@ class SearchController extends Controller
 
         }
         $reviews['res'] = $res;
+        // var_dump($res);
         $keyword = str_replace("+", " ", $keyword);
         //$strictSerie = $em->getRepository('SmartSearchSearchBundle:Serie')->findOneBy(array('name' => $query[0]));
         if ($this->isSerieEntity($keyword)!=false) {
@@ -300,12 +302,8 @@ class SearchController extends Controller
     public function displayReviewAction($id,$dateCrawl)
     {
         $review = $this->getDoctrine()->getRepository("SmartSearchSearchBundle:Review")->findOneBy(array("idReview" =>$id ));
-        $template = $review->getFile($dateCrawl);
-        ob_start();
-        require_once($template);
-        $html = ob_get_contents();
-        ob_end_clean();
-        return new Response($html);
+        $file = 'http://'.$_SERVER['SERVER_NAME'].'/'.$review->getFile($dateCrawl);
+        return $this->render("SmartSearchSearchBundle:Search:review.html.twig", array("content" => file_get_contents($file)));
     }
     public function graphAction()
     {
