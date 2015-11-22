@@ -16,6 +16,18 @@
     font-style: normal;
 }
 
+.bold {
+    font-weight: bold;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.underline {
+    text-decoration: underline;
+}
+
 img#tv, div#screen, img#intermission {
     position: absolute !important;
     top: 0; left: 0; bottom: 0; right: 0;
@@ -245,6 +257,7 @@ g:first-of-type > .node:hover {
     fill: gray;
     cursor: move;
 }
+
 #message-box {
     background: #e6e6e6 none repeat scroll 0 0;
     box-shadow: 0 1px 2px 0 #3a4350;
@@ -258,6 +271,7 @@ g:first-of-type > .node:hover {
     z-index: 99999;
     overflow: auto;
 }
+
 #overlay {
     background: #43474c none repeat scroll 0 0;
     height: 100%;

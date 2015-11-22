@@ -3,9 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <title>Series Search</title>
-<!--
-        <meta content="user-scalable=no, initial-scale = 1, minimum-scale = 1, maximum-scale = 1, width=device-width" name="viewport">
--->
+        <meta name="description" content="Moteur de recherche de critiques relatives aux séries TV">
+        <meta name="author" content="Macky Dieng, Julien Foucault, Baptiste Vannesson">
         <link rel="shortcut icon" type="image/png" href="/images/clap.png">
         <link rel="stylesheet" href="/stylesheets/home.css" media="all">
         <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
@@ -61,8 +60,8 @@
             <!-- Moteur de recherche -->
             <div id="search-engine">
                 <div id="logo">
-                    <img id="clapper" src="/images/clapper.png" alt="Clap">
-                    <h1>Series Search</h1>
+                    <img id="clapper" src="/images/clapper.png" alt="Clap" itemprop="primaryImageOfPage">
+                    <h1 itemprop="name">Series Search</h1>
                 </div>
                 {{ form_start(form) }}
                     {{ form_errors(form) }}
@@ -96,13 +95,13 @@
                 </div>
             </div>
             <!-- SERPs -->
-            <div id="serps">
+            <div id="serps" itemprop="mainContentOfPage">
                 {% if results is defined %}
                     {%if results.serie != null%}
-                        <div id="specific-series">
+                        <div id="specific-series" itemscope itemtype="https://schema.org/TVSeries">
                             <p>
-                                <b>{{results.serie.name}}</b> est une série de type <i>{{results.serie.genre}}</i> réalisée par <i>{{results.serie.director}}</i> en <i>{{results.serie.dateRelease}}</i><br><br>
-                                <u>Acteurs</u> : {{results.serie.actors}}
+                                <span class="bold" itemprop="name">{{results.serie.name}}</span> est une série de type <span class="italic" itemprop="genre">{{results.serie.genre}}</span> réalisée par <span class="italic" itemprop="director">{{results.serie.director}}</span> en <span class="italic" itemprop="datePublished">{{results.serie.dateRelease}}</span><br><br>
+                                <span class="underline">Acteurs</span> : {{results.serie.actors}}
                             </p>
                         </div>
                     {%endif%}
@@ -111,19 +110,20 @@
                             <h1>TOP 10 sur l'expression "{{keyword}}"</h1>
                             <p>Résultats via le crawl du <span id="datecrawl">{{dateCrawl}}</span></p>
                             {% for critique in results.res %}
-                                <div class="result">
+                                <div class="result" itemscope itemtype="https://schema.org/Article">
                                     <div class="image">
-                                        <a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}">
-                                            <img src="{{ asset(critique[1].getWebPath()) }}">
+                                        <a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}" class="display-review">
+                                            <img src="{{ asset(critique[1].getWebPath()) }}" alt="" itemprop="image">
                                         </a>
                                     </div>
                                     <div class="description">
-                                        <a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}">
-                                            <h2>{{critique[0].title}}</h2>
+                                        <a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}" class="display-review">
+                                            <h2 itemprop="headline">{{critique[0].title}}</h2>
                                         </a>
-                                        <p>{{critique[0].content|truncate(200, true, '...')}}</p>
+                                        <p itemprop="description">{{critique[0].content|truncate(200, true, '...')}}</p>
                                         <p><a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}" class="display-review" id="{{critique[0].idReview}}">Voir la page</a></p>
                                     </div>
+                                    <div style="display:none;" itemprop="datePublished">{{critique[0].datePublished|date('Y')}}</div>
                                 </div>
                             {% endfor %}
                         </div>
@@ -136,27 +136,27 @@
             <div id="timeline" style="display:none;">
                 <div id="grad_top"></div>
                 <ul id="dates">
-				{% if results is defined %}
-					 {% if results.res|length > 0 %}
-						{% for critique in results.res %}
-							<li><a href="#{{critique[0].datePublished|date('Y')}}">{{critique[0].datePublished|date('Y')}}</a></li>
-						{%endfor%}
-					 {%endif%}
-				 {%endif%}
+                {% if results is defined %}
+                     {% if results.res|length > 0 %}
+                        {% for critique in results.res %}
+                            <li><a href="#{{critique[0].datePublished|date('Y')}}">{{critique[0].datePublished|date('Y')}}</a></li>
+                        {%endfor%}
+                     {%endif%}
+                 {%endif%}
                 </ul>
                 <ul id="issues">
-				{% if results is defined %}
-					{% if results.res|length > 0 %}
-						{% for critique in results.res %}
-							<li id="{{critique[0].datePublished|date('Y')}}">
-								<img src="{{asset(critique[1].getWebPath())}}" alt="{{critique[1].name}}">
-								<h2>{{critique[0].title}}</h2>
-								<p>{{critique[0].content|truncate(200, true, '...')}}</p>
-								<a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}">Voir la page</a>
-							</li>
-						{%endfor%}
-					{%endif%}
-				{%endif%}
+                {% if results is defined %}
+                    {% if results.res|length > 0 %}
+                        {% for critique in results.res %}
+                            <li id="{{critique[0].datePublished|date('Y')}}">
+                                <img src="{{asset(critique[1].getWebPath())}}" alt="{{critique[1].name}}">
+                                <h2>{{critique[0].title}}</h2>
+                                <p>{{critique[0].content|truncate(200, true, '...')}}</p>
+                                <a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}">Voir la page</a>
+                            </li>
+                        {%endfor%}
+                    {%endif%}
+                {%endif%}
                 </ul>
                 <div id="prev-date"></div>
                 <div id="next-date"></div>
@@ -188,7 +188,7 @@
                 </div>
             </div>
             <!-- Aide sur le programme -->
-            <div id="help" style="display:none;">
+            <div id="help" style="display:none;" itemprop="description">
                 <p>Ce programme vous permet de chercher des critiques de séries TV dans une large base de données, constituée à partir d'informations et ressources crawlées sur <a href="http://www.senscritique.com/" target="_blank">SensCritique</a>.</p>
                 <p>Pour que votre expérience soit plus ludique et immersive, vous avez la possibilité de configurer votre espace de visualisation, afin qu'il réponde à vos préférences personnelles. Vous pouvez, à ce titre, utiliser la télécommande pour choisir votre ambiance, ou simplement lancer le diaporama qui vous fera voyager dans les différents univers des séries TV.</p>
                 <p>À noter qu'un menu récapitulatif est à votre disposition si vous souhaitez avoir un rapide aperçu des contenus et ambiances disponibles.</p>
@@ -198,7 +198,7 @@
             <!-- Infos sur le programme -->
             <div id="info" style="display:none;">
                 <div class="ui info message">
-                    <p class="header">Cette application a été réalisée en 2015 dans le cadre d'un projet du M2-DNR2I à l'université de Caen Normandie.<p>
+                    <p class="header" itemprop="about">Cette application a été réalisée en 2015 dans le cadre d'un projet du M2-DNR2I à l'université de Caen Normandie.<p>
                 </div>
                 <div class="ui cards">
                     <div class="blue card" itemprop="author" itemscope itemtype="https://schema.org/Person">
