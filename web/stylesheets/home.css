@@ -28,7 +28,7 @@
     text-decoration: underline;
 }
 
-img#tv, div#screen, img#intermission {
+img#tv, div#screen, img#intermission, iframe {
     position: absolute !important;
     top: 0; left: 0; bottom: 0; right: 0;
     margin: auto !important;
@@ -39,15 +39,19 @@ img#tv {
     height: 658px;
 }
 
-img#intermission {
+img#intermission, iframe {
     transform: translateY(-68px);
+}
+
+img#intermission {
+    z-index: 5;
 }
 
 div#remote-wrapper {
     position: absolute !important;
     top: 15%;
     left: 15%;
-    z-index: 2;
+    z-index: 10;
 }
 
 @media screen and (max-width: 1700px) {
@@ -165,7 +169,7 @@ div#screen div#specific-series {
     padding: 30px;
 }
 
-div#screen div#specific-series p {
+div#screen div#specific-series > div {
     background-color: #cacbcd;
     border: 1px solid #363737;
     color: #363737;
@@ -258,25 +262,18 @@ g:first-of-type > .node:hover {
     cursor: move;
 }
 
-#message-box {
-    background: #e6e6e6 none repeat scroll 0 0;
-    box-shadow: 0 1px 2px 0 #3a4350;
-    height: 540px;
-    left: 50%;
-    padding: 30px;
-    position: fixed;
-    top: 40%;
-    transform: translateY(-55%) translateX(-50%);
-    width: 1024px;
-    z-index: 99999;
+iframe {
+    width: 750px;
+    height: 470px;
+    z-index: 3;
     overflow: auto;
+    background-color: white;
 }
 
-#overlay {
-    background: #43474c none repeat scroll 0 0;
-    height: 100%;
-    opacity: 0.7;
-    position: fixed;
+#loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
-    z-index: 88888;
+    height: 100%;
 }

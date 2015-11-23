@@ -99,13 +99,16 @@
                 {% if results is defined %}
                     {%if results.serie != null%}
                         <div id="specific-series" itemscope itemtype="https://schema.org/TVSeries">
-                            <p>
+                            <div>
                                 <span class="bold" itemprop="name">{{results.serie.name}}</span> est une série de type <span class="italic" itemprop="genre">{{results.serie.genre}}</span> réalisée par <span class="italic" itemprop="director">{{results.serie.director}}</span> en <span class="italic" itemprop="datePublished">{{results.serie.dateRelease}}</span><br><br>
-                                <span class="underline">Acteurs</span> : 
+                                <span class="underline">Acteurs</span> :
                                 {% for actor in results.actors %}
-									<span>{{actor}}</span>
-								{%endfor%}
-                            </p>
+                                    <div class="ui label">
+                                        <i class="user icon"></i>
+                                        <span itemprop="actor">{{actor}}</span>
+                                    </div>
+                                {%endfor%}
+                            </div>
                         </div>
                     {%endif%}
                     {% if results.res|length > 0 %}
@@ -115,14 +118,10 @@
                             {% for critique in results.res %}
                                 <div class="result" itemscope itemtype="https://schema.org/Article">
                                     <div class="image">
-                                        <a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}" class="display-review">
-                                            <img src="{{ asset(critique[1].getWebPath()) }}" alt="" itemprop="image">
-                                        </a>
+                                        <img src="{{ asset(critique[1].getWebPath()) }}" alt="" itemprop="image">
                                     </div>
                                     <div class="description">
-                                        <a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}" class="display-review">
-                                            <h2 itemprop="headline">{{critique[0].title}}</h2>
-                                        </a>
+                                        <h2 itemprop="headline">{{critique[0].title}}</h2>
                                         <p itemprop="description">{{critique[0].content|truncate(200, true, '...')}}</p>
                                         <p><a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}" class="display-review" id="{{critique[0].idReview}}">Voir la page</a></p>
                                     </div>
@@ -155,7 +154,7 @@
                                 <img src="{{asset(critique[1].getWebPath())}}" alt="{{critique[1].name}}">
                                 <h2>{{critique[0].title}}</h2>
                                 <p>{{critique[0].content|truncate(200, true, '...')}}</p>
-                                <a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}">Voir la page</a>
+                                <a href="{{path('smart_search_review_display', {'id': critique[0].idReview,'dateCrawl': dateCrawl })}}" class="display-review" id="{{critique[0].idReview}}">Voir la page</a>
                             </li>
                         {%endfor%}
                     {%endif%}
@@ -275,51 +274,55 @@
         <script src="/javascripts/loadPieChart.js"></script>
         <script src="/javascripts/js.cookie.js"></script>
         <script src="/javascripts/gui.js"></script>
-        <script type="text/javascript">
-            $(document).ready(function(){
-                $( ".display-review" ).bind(
-                    {
-                        mouseenter: function(e) {
+        <script>
+            $( document ).ready(function(){
+
+                $( ".display-review" ).click(function(e) {
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var route = "{{ path('smart_search_review_display', {'id': '1111', 'dateCrawl': '0000' }) }}";
+                    var id_review = $( this ).attr( "id" );
+                    var date_crawl = $( "#datecrawl" ).text();
+
+                    route = route.replace("1111", id_review);
+                    route = route.replace("0000", date_crawl);
+
+                    $( "body" ).prepend( '<iframe id="message-box"></iframe>' );
+                    $( "#screen" ).prepend( '<div id="loader"><div class="ui active large inline loader"></div></div>' );
+
+                    $.ajax({
+                        url : route,
+                        type : 'GET',
+                        dataType : 'html',
+                        beforeSend: function(){
+                            console.log(route);
                         },
-                        mouseleave: function(e) {
-                        },
-                        click: function(evt) {
-                            evt.stopPropagation();
-                            evt.preventDefault();
+                        success : function(result, statut) { // code_html contient le HTML renvoyé
+                            $( "iframe" ).attr( "src", route );
+                            $( "iframe" ).on("load", function() {
 
-                            var id_review = $(this).attr("id");
-                            var date_crawl = $("#datecrawl").text();
-                            var route = "{{ path('smart_search_review_display', {'id': '1111', 'dateCrawl': '0000' }) }}";
-                            route = route.replace("1111", id_review);
-                            route = route.replace("0000", date_crawl);
+                                var stylesheets = $( "iframe" ).contents().find( "link[rel='stylesheet']" );
+                                var scripts = $( "iframe" ).contents().find( "script, noscript" );
+                                var iframes = $( "iframe" ).contents().find( "iframe" );
+                                var sftoolbar = $( "iframe" ).contents().find( ".sf-toolbar" );
 
-                            $('body').prepend('<div id="overlay"></div>');
-                            $('body').prepend('<div id="message-box"></div>');
-                            $('#message-box').append('<a id="close-message-box"></a>');
+                                stylesheets.eq(0).attr( "href", "/stylesheets/sc_1.css" );
+                                stylesheets.eq(1).attr( "href", "/stylesheets/sc_2.css" );
 
-                            $.ajax({
-                                url : route,
-                                type : 'GET',
-                                dataType : 'html',
-                                beforeSend: function(){
-                                    console.log(route);
-                                    $('#message-box').append('<div id="preloader-message"><img src="/images/preloader.gif" alt="loading..." /></div>');
-                                },
-                                success : function(result, statut){ // code_html contient le HTML renvoyé
-                                    $('#preloader-message').remove();
-                                    $('#message-box').append(result);
-                               }
-                            });
+                                $( "iframe" ).contents().find( "body" ).removeAttr( "data-sc-auto-show-modal-delay" );
 
-                            $('#close-message-box, #overlay').click(function(e){
-                                e.stopPropagation();
-                                e.preventDefault();
-                                $('#overlay').remove();
-                                $('#message-box').remove();
+                                scripts.remove();
+                                iframes.remove();
+                                sftoolbar.remove();
+
+                                $( "#loader" ).remove();
+
                             });
                         }
-                    }
-                );
+                    });
+                });
             });
         </script>
     </body>

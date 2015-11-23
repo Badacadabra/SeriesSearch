@@ -69,6 +69,9 @@ $( document ).ready(function() {
         if ($( "#intermission" ).is(":visible")) {
             $( "#intermission" ).fadeToggle();
         }
+        if ($( "#message-box" ).is(":visible")) {
+            $( "#message-box" ).fadeToggle();
+        }
         if (intermission != null) {
             intermission.pause();
             intermission = null;
@@ -106,7 +109,7 @@ $( document ).ready(function() {
 
     // Gestion dynamique de l'affichage dans l'écran
     var screenButtons = ["search-engine-button", "serps-button", "force-layout-button", "timeline-button", "pie-chart-button", "menu-button", "help-button", "info-button"];
-    var screenContents = ["search-engine", "serps", "force-layout", "timeline", "pie-chart", "menu", "help", "info", "intermission"];
+    var screenContents = ["search-engine", "serps", "force-layout", "timeline", "pie-chart", "menu", "help", "info", "message-box", "intermission", "loader"];
 
     for (var i = 0; i < screenButtons.length; i++) {
         switchScreenContent(screenButtons[i], screenContents[i]);
@@ -136,9 +139,9 @@ $( document ).ready(function() {
 
     $( ".pie-chart-button" ).click(function() {
         if ($( "#pie-chart" ).is( ":empty" )) {
-			$.getJSON("/tmp/pie_chart_data.json", function(data) {
-				loadPieChart(data);
-			})
+            $.getJSON("/tmp/pie_chart_data.json", function(data) {
+                loadPieChart(data);
+            })
         }
     });
 
