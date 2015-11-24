@@ -86,9 +86,8 @@
                 }
                 #issues li h2 {
                     color: black;
-                    font-size: xx-large;
+                    font-size: x-large;
                     margin: 20px 0;
-                    text-shadow: #000 1px 1px 2px;
                 }
                 #issues li p {
                     font-size: large;
